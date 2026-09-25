@@ -79,57 +79,21 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-c:\ai resume builder\
-├── client/
+├── client/          # Frontend React + Tailwind Application (Deployed to Vercel)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── builder/
-│   │   │   │   ├── templates/
-│   │   │   │   │   ├── ModernTechTemplate.jsx
-│   │   │   │   │   ├── ExecutiveTemplate.jsx
-│   │   │   │   │   ├── CreativeNordicTemplate.jsx
-│   │   │   │   │   └── CompactAtsTemplate.jsx
-│   │   │   │   ├── ResumeEditor.jsx
-│   │   │   │   └── ResumePreview.jsx
-│   │   │   ├── matcher/
-│   │   │   │   └── JobMatcherDashboard.jsx
-│   │   │   ├── jobs/
-│   │   │   │   └── JobBoard.jsx
-│   │   │   ├── history/
-│   │   │   │   └── MatchHistory.jsx
-│   │   │   ├── AuthModal.jsx
-│   │   │   └── Navbar.jsx
 │   │   ├── context/
-│   │   │   └── AuthContext.jsx
-│   │   ├── services/
-│   │   │   └── api.js
-│   │   ├── App.jsx
-│   │   └── main.jsx
+│   │   └── services/
 │   ├── tailwind.config.js
+│   ├── vercel.json
 │   └── vite.config.js
-└── server/
+└── server/          # Backend Node.js / Express API (Deployed to Render)
     ├── src/
     │   ├── config/
-    │   │   └── db.js
     │   ├── controllers/
-    │   │   ├── authController.js
-    │   │   ├── resumeController.js
-    │   │   ├── jobController.js
-    │   │   └── aiController.js
     │   ├── middleware/
-    │   │   └── auth.js
     │   ├── models/
-    │   │   ├── User.js
-    │   │   ├── Resume.js
-    │   │   ├── Job.js
-    │   │   └── ApplicationMatch.js
     │   ├── routes/
-    │   │   ├── authRoutes.js
-    │   │   ├── resumeRoutes.js
-    │   │   ├── jobRoutes.js
-    │   │   └── aiRoutes.js
-    │   ├── utils/
-    │   │   └── geminiAi.js
-    │   └── server.js
-    └── .env
+    │   └── utils/
+    └── server.js
 ```
