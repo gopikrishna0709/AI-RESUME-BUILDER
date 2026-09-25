@@ -1,10 +1,11 @@
 import React from 'react';
 import {
+  Home,
   FileText,
-  Briefcase,
-  Target,
-  History,
   Sparkles,
+  Target,
+  Briefcase,
+  Bot,
   LogIn,
   LogOut,
   User,
@@ -12,24 +13,26 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export default function Navbar({ activeTab, onSelectTab, resumeCount = 1 }) {
+export default function Navbar({ activeTab, onSelectTab }) {
   const { user, logout, openAuthModal, demoLogin, isAuthenticated } = useAuth();
 
   const NAV_ITEMS = [
+    { id: 'home', label: 'Home', fullLabel: 'Home Hub', icon: Home },
     { id: 'builder', label: 'Builder', fullLabel: 'Resume Builder', icon: FileText },
-    { id: 'matcher', label: 'AI Matcher', fullLabel: 'AI Job Matcher', icon: Target },
-    { id: 'jobs', label: 'Jobs', fullLabel: 'Browse Jobs', icon: Briefcase },
-    { id: 'history', label: 'History', fullLabel: 'Match History', icon: History },
+    { id: 'tools', label: 'AI Tools', fullLabel: 'AI Resume Tools', icon: Sparkles },
+    { id: 'matcher', label: 'Matcher', fullLabel: 'Job Matcher', icon: Target },
+    { id: 'jobs', label: 'Jobs', fullLabel: 'Job Recommendations', icon: Briefcase },
+    { id: 'career', label: 'Career AI', fullLabel: 'Career AI', icon: Bot },
   ];
 
   return (
     <>
       {/* Top Main Navbar */}
-      <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 px-3 sm:px-8 py-2.5 sm:py-3">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
+      <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 px-3 sm:px-6 lg:px-8 py-2.5">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-2 sm:gap-4">
           {/* Brand Logo */}
           <div
-            onClick={() => onSelectTab('builder')}
+            onClick={() => onSelectTab('home')}
             className="flex items-center gap-2.5 cursor-pointer select-none shrink-0"
           >
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
@@ -43,13 +46,13 @@ export default function Navbar({ activeTab, onSelectTab, resumeCount = 1 }) {
                 </span>
               </div>
               <div className="text-[9px] sm:text-[10px] text-slate-400 font-medium tracking-wide leading-tight hidden xs:block">
-                Builder & ATS Scanner
+                Builder & Job Intelligence
               </div>
             </div>
           </div>
 
           {/* Desktop Navigation Tabs */}
-          <div className="hidden md:flex items-center bg-slate-900/90 border border-slate-800 rounded-2xl p-1 gap-1 text-xs">
+          <div className="hidden lg:flex items-center bg-slate-900/90 border border-slate-800 rounded-2xl p-1 gap-1 text-xs">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -57,7 +60,7 @@ export default function Navbar({ activeTab, onSelectTab, resumeCount = 1 }) {
                 <button
                   key={item.id}
                   onClick={() => onSelectTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-semibold transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-semibold transition-all ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
@@ -74,7 +77,7 @@ export default function Navbar({ activeTab, onSelectTab, resumeCount = 1 }) {
           <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
-                <div className="hidden lg:flex flex-col items-end text-right">
+                <div className="hidden xl:flex flex-col items-end text-right">
                   <span className="text-xs font-bold text-white leading-tight">{user?.name}</span>
                   <span className="text-[10px] text-blue-400 leading-tight truncate max-w-[140px]">
                     {user?.targetRole || user?.title}
@@ -121,8 +124,8 @@ export default function Navbar({ activeTab, onSelectTab, resumeCount = 1 }) {
         </div>
       </header>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 px-2 py-1.5 flex items-center justify-around shadow-2xl">
+      {/* Mobile / Tablet Horizontal Navigation Scroll */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 px-2 py-1.5 flex items-center justify-around shadow-2xl overflow-x-auto">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -130,12 +133,12 @@ export default function Navbar({ activeTab, onSelectTab, resumeCount = 1 }) {
             <button
               key={item.id}
               onClick={() => onSelectTab(item.id)}
-              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl transition-all ${
+              className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all shrink-0 ${
                 isActive ? 'text-blue-400 font-bold bg-blue-600/10' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <Icon className="w-4 h-4" />
-              <span className="text-[10px] mt-0.5">{item.label}</span>
+              <span className="text-[9.5px] mt-0.5">{item.label}</span>
             </button>
           );
         })}

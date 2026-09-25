@@ -57,6 +57,9 @@ export const aiAPI = {
   matchJob: (data) => api.post('/ai/match-job', data),
   getMatches: () => api.get('/ai/matches'),
   applyTailoring: (matchId) => api.post(`/ai/apply-tailoring/${matchId}`),
+  getInterviewQuestions: (data) => api.post('/ai/interview-questions', data),
+  evaluateMock: (data) => api.post('/ai/mock-evaluate', data),
+  getSkillRoadmap: (data) => api.post('/ai/skill-roadmap', data),
 };
 
 export default api;

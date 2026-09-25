@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import AuthModal from './components/AuthModal';
+import HomeHub from './components/home/HomeHub';
 import ResumeEditor from './components/builder/ResumeEditor';
 import ResumePreview from './components/builder/ResumePreview';
+import AiResumeTools from './components/tools/AiResumeTools';
 import JobMatcherDashboard from './components/matcher/JobMatcherDashboard';
 import JobBoard from './components/jobs/JobBoard';
-import MatchHistory from './components/history/MatchHistory';
+import CareerAiHub from './components/career/CareerAiHub';
 import { resumeAPI } from './services/api';
 import { useAuth } from './context/AuthContext';
-import { Sparkles, Plus, Copy, Trash2, FileCheck, Layers, LayoutTemplate, Eye, Edit3 } from 'lucide-react';
+import { Sparkles, Plus, Copy, FileCheck, LayoutTemplate, Eye, Edit3 } from 'lucide-react';
 
 const DEFAULT_RESUME = {
   title: 'Full Stack Engineer Resume',
@@ -102,8 +104,8 @@ const DEFAULT_RESUME = {
 };
 
 export default function App() {
-  const { isAuthenticated, user, demoLogin } = useAuth();
-  const [activeTab, setActiveTab] = useState('builder'); // 'builder' | 'matcher' | 'jobs' | 'history'
+  const { isAuthenticated, demoLogin } = useAuth();
+  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'builder' | 'tools' | 'matcher' | 'jobs' | 'career'
   const [resumes, setResumes] = useState([]);
   const [activeResume, setActiveResume] = useState(DEFAULT_RESUME);
   const [isSaving, setIsSaving] = useState(false);
@@ -115,12 +117,10 @@ export default function App() {
     setTimeout(() => setToastMessage(''), 3500);
   };
 
-  // Load resumes
   useEffect(() => {
     if (isAuthenticated) {
       loadResumes();
     } else {
-      // Auto-start demo session if no token for instant zero-friction trial
       demoLogin().catch(() => {});
     }
   }, [isAuthenticated]);
@@ -172,6 +172,7 @@ export default function App() {
       if (res.data.success) {
         setResumes([res.data.data, ...resumes]);
         setActiveResume(res.data.data);
+        setActiveTab('builder');
         showToast('Created new resume from template!');
       }
     } catch (err) {
@@ -207,14 +208,10 @@ export default function App() {
     }));
   };
 
-  const handleResumeUpdatedFromMatcher = (updatedResume) => {
+  const handleResumeUpdated = (updatedResume) => {
     setActiveResume(updatedResume);
     loadResumes();
-    showToast('✨ Resume updated with AI tailored skills & summary!');
-  };
-
-  const handleSelectJobForMatch = (jobId) => {
-    setActiveTab('matcher');
+    showToast('✨ Resume updated successfully!');
   };
 
   return (
@@ -222,7 +219,6 @@ export default function App() {
       <Navbar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
-        resumeCount={resumes.length}
       />
 
       <AuthModal />
@@ -235,17 +231,26 @@ export default function App() {
         </div>
       )}
 
-      {/* Main Container */}
-      <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto pb-24 md:pb-8">
-        {/* Tab 1: Builder */}
+      {/* Main Content Area */}
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto pb-24 lg:pb-8">
+        {/* Tab 0: Home Hub */}
+        {activeTab === 'home' && (
+          <HomeHub
+            activeResume={activeResume}
+            onSelectTab={setActiveTab}
+            onOpenCreateResume={handleCreateNewResume}
+          />
+        )}
+
+        {/* Tab 1: Resume Builder */}
         {activeTab === 'builder' && (
           <div className="space-y-4">
-            {/* Top Resume Selector Bar */}
+            {/* Top Selector Toolbar */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/60 border border-slate-800/80 p-3 sm:px-4 sm:py-3 rounded-2xl">
               <div className="flex items-center gap-2.5">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 shrink-0">
                   <LayoutTemplate className="w-4 h-4 text-blue-400" />
-                  <span className="hidden xs:inline">Resume:</span>
+                  <span className="hidden xs:inline">Active Resume:</span>
                 </div>
 
                 <select
@@ -266,7 +271,6 @@ export default function App() {
 
               {/* Mobile View Toggle & Action Buttons */}
               <div className="flex items-center justify-between sm:justify-end gap-2">
-                {/* Mobile Editor/Preview Toggle Pill */}
                 <div className="flex lg:hidden bg-slate-950 p-0.5 rounded-xl border border-slate-800 text-xs font-semibold">
                   <button
                     onClick={() => setMobileBuilderView('editor')}
@@ -314,7 +318,7 @@ export default function App() {
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-xs font-bold shadow-md shadow-purple-500/20 transition-all"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                    <span className="hidden sm:inline">Test ATS</span>
+                    <span className="hidden sm:inline">Test ATS Match</span>
                   </button>
                 </div>
               </div>
@@ -322,7 +326,6 @@ export default function App() {
 
             {/* Dual Pane on Desktop / Responsive View on Mobile */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Form: Editor */}
               <div
                 className={`lg:col-span-6 h-[750px] sm:h-[820px] ${
                   mobileBuilderView === 'preview' ? 'hidden lg:block' : 'block'
@@ -336,7 +339,6 @@ export default function App() {
                 />
               </div>
 
-              {/* Right Pane: Live Multi-Template Preview */}
               <div
                 className={`lg:col-span-6 h-[750px] sm:h-[820px] ${
                   mobileBuilderView === 'editor' ? 'hidden lg:block' : 'block'
@@ -352,26 +354,33 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab 2: AI Job Matcher */}
+        {/* Tab 2: AI Resume Tools */}
+        {activeTab === 'tools' && (
+          <AiResumeTools
+            activeResume={activeResume}
+            onUpdateResume={handleResumeUpdated}
+          />
+        )}
+
+        {/* Tab 3: AI Job Matcher */}
         {activeTab === 'matcher' && (
           <JobMatcherDashboard
             activeResume={activeResume}
-            onResumeUpdated={handleResumeUpdatedFromMatcher}
+            onResumeUpdated={handleResumeUpdated}
           />
         )}
 
-        {/* Tab 3: Browse Jobs */}
+        {/* Tab 4: Job Recommendations */}
         {activeTab === 'jobs' && (
-          <JobBoard onSelectJobForMatch={handleSelectJobForMatch} />
+          <JobBoard
+            activeResume={activeResume}
+            onSelectJobForMatch={(jobId) => setActiveTab('matcher')}
+          />
         )}
 
-        {/* Tab 4: Match History */}
-        {activeTab === 'history' && (
-          <MatchHistory
-            onOpenMatcherWithRecord={(rec) => {
-              setActiveTab('matcher');
-            }}
-          />
+        {/* Tab 5: Career AI */}
+        {activeTab === 'career' && (
+          <CareerAiHub activeResume={activeResume} />
         )}
       </main>
     </div>

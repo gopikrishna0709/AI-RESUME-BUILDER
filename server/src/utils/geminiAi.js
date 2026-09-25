@@ -30,7 +30,6 @@ function analyzeJobMatchHeuristic(resume, jobDescription, jobTitle) {
   const jdText = (jobDescription || '').toLowerCase();
   const titleText = (jobTitle || '').toLowerCase();
 
-  // Tech and soft skill catalog for extraction
   const skillDictionary = [
     'react', 'react.js', 'javascript', 'typescript', 'node.js', 'nodejs', 'express', 'mongodb', 'sql', 'postgresql',
     'python', 'django', 'fastapi', 'aws', 'docker', 'kubernetes', 'graphql', 'rest api', 'tailwind css', 'next.js',
@@ -40,10 +39,8 @@ function analyzeJobMatchHeuristic(resume, jobDescription, jobTitle) {
     'prompt engineering', 'cloud computing', 'gcp', 'azure', 'devops', 'leadership', 'communication', 'problem solving'
   ];
 
-  // Identify skills present in JD
   const jdSkills = skillDictionary.filter(skill => jdText.includes(skill) || titleText.includes(skill));
   if (jdSkills.length === 0) {
-    // extract common word tokens
     const words = jdText.match(/\b[a-z]{3,15}\b/g) || [];
     const uniqueWords = [...new Set(words)];
     jdSkills.push(...uniqueWords.slice(0, 10));
@@ -63,15 +60,11 @@ function analyzeJobMatchHeuristic(resume, jobDescription, jobTitle) {
   const totalJdSkills = jdSkills.length || 1;
   const rawSkillsRatio = matchingSkills.length / totalJdSkills;
   
-  // Calculate scores
   const skillsScore = Math.min(100, Math.round(rawSkillsRatio * 100 * 0.9 + 15));
-  
-  // Check experience match
   const hasExp = (resume.experience || []).length > 0;
   const expCount = (resume.experience || []).length;
   const expScore = Math.min(100, Math.max(50, expCount * 22 + (hasExp ? 30 : 0)));
 
-  // ATS Readability Score
   let atsScore = 80;
   if (resume.summary && resume.summary.length > 50) atsScore += 5;
   if ((resume.experience || []).length >= 2) atsScore += 5;
@@ -81,7 +74,6 @@ function analyzeJobMatchHeuristic(resume, jobDescription, jobTitle) {
 
   const overallScore = Math.round((skillsScore * 0.5) + (expScore * 0.3) + (atsScore * 0.2));
 
-  // Key strengths & gaps
   const keyStrengths = [];
   if (matchingSkills.length > 0) {
     keyStrengths.push(`Direct alignment on core skills: ${matchingSkills.slice(0, 4).join(', ')}.`);
@@ -116,11 +108,9 @@ function analyzeJobMatchHeuristic(resume, jobDescription, jobTitle) {
     `Ensure your technical skills section categorizes frontend, backend, databases, and DevOps clearly.`
   ];
 
-  // Tailored Summary
-  const candidateName = resume.personalInfo?.fullName || 'Dedicated professional';
   const roleName = jobTitle || resume.targetJobTitle || 'Software Professional';
   const topMatches = matchingSkills.slice(0, 3).join(', ') || 'modern software engineering';
-  const tailoredSummary = `Results-driven ${roleName} with extensive hands-on expertise in ${topMatches}. Demonstrated track record of designing, scaling, and maintaining high-reliability systems and responsive web applications. Passionate about applying modern architecture, clean code practices, and fast iterative delivery to deliver measurable impact for ${jobTitle ? 'the team' : 'forward-thinking organizations'}.`;
+  const tailoredSummary = `Results-driven ${roleName} with extensive hands-on expertise in ${topMatches}. Demonstrated track record of designing, scaling, and maintaining high-reliability systems and responsive web applications. Passionate about applying modern architecture, clean code practices, and fast iterative delivery to deliver measurable impact.`;
 
   return {
     overallMatchScore: Math.max(35, Math.min(98, overallScore)),
@@ -179,7 +169,6 @@ Guidelines:
     }
   }
 
-  // Smart Engine Fallback
   const skillsStr = (keySkills && keySkills.length > 0) ? keySkills.slice(0, 4).join(', ') : 'modern full-stack architecture, cloud systems, and scalable APIs';
   const role = targetRole || 'Software Engineer';
   const level = experienceLevel || 'Experienced';
@@ -217,7 +206,6 @@ Return ONLY a JSON array of strings, e.g. ["bullet 1", "bullet 2", "bullet 3"].`
     }
   }
 
-  // Fallback intelligent bullets
   const role = roleTitle || 'Software Engineer';
   return [
     `Spearheaded the development and deployment of scalable features as ${role} at ${company || 'organization'}, boosting user engagement by 32% and reducing latency by 45%.`,
@@ -279,20 +267,256 @@ Return ONLY valid JSON matching this schema:
       const text = response.text ? response.text.trim() : '';
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        const parsed = JSON.parse(jsonMatch[0]);
-        return parsed;
+        return JSON.parse(jsonMatch[0]);
       }
     } catch (err) {
       console.warn('Gemini matching analysis fallback:', err.message);
     }
   }
 
-  // Heuristic engine
   return analyzeJobMatchHeuristic(resume, jobDescription, jobTitle);
+}
+
+/**
+ * CAREER AI: Interview Questions Generator
+ */
+async function generateInterviewQuestions({ targetRole, skills, experienceLevel, category = 'all' }) {
+  const role = targetRole || 'Full Stack Software Engineer';
+  const skillList = (skills && skills.length > 0) ? skills.join(', ') : 'React, Node.js, System Design, Cloud';
+
+  const gemini = getGeminiClient();
+  if (gemini) {
+    try {
+      const prompt = `You are a Principal Tech Recruiter and Engineering Director at FAANG.
+Generate 6 realistic, high-signal interview questions for a ${experienceLevel || 'Senior'} ${role} specializing in ${skillList}.
+
+Category: ${category} (Technical, Behavioral STAR, System Design, Problem Solving)
+
+Return ONLY a JSON array of objects matching this schema:
+[
+  {
+    "id": 1,
+    "type": "Technical" | "Behavioral" | "System Design",
+    "question": "string",
+    "tips": "string (what great candidates highlight)",
+    "sampleAnswer": "string (bullet points of ideal response)"
+  }
+]`;
+
+      const response = await gemini.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents: prompt,
+      });
+
+      const text = response.text ? response.text.trim() : '';
+      const jsonMatch = text.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+    } catch (err) {
+      console.warn('Gemini interview questions fallback:', err.message);
+    }
+  }
+
+  // Fallback high-impact interview questions
+  return [
+    {
+      id: 1,
+      type: 'Technical',
+      question: `How do you optimize state management and rendering performance in a large-scale React application handling high-frequency updates?`,
+      tips: 'Discuss memoization (useMemo, useCallback), virtualized lists, immutability, and state colocation vs global stores (Zustand/Redux).',
+      sampleAnswer: '1. Colocate state to leaf nodes. 2. Implement virtual scrolling for large feeds. 3. Use selector-based subscriptions to prevent unnecessary parent-tree re-renders.'
+    },
+    {
+      id: 2,
+      type: 'System Design',
+      question: `Design an end-to-end real-time notification engine supporting 5M daily active users with low latency and guarantee delivery.`,
+      tips: 'Cover WebSockets/SSE, Redis Pub/Sub, Kafka message queues, connection connection pooling, and push notification services (APNs/FCM).',
+      sampleAnswer: '1. Clients connect via WebSocket Gateway. 2. Redis Pub/Sub fans out notifications to active gateway workers. 3. Dead-letter queues handle retries for offline users.'
+    },
+    {
+      id: 3,
+      type: 'Behavioral',
+      question: `Tell me about a time you identified a critical technical bottleneck or architectural debt. How did you advocate for refactoring and measure success?`,
+      tips: 'Use the STAR method: explain the business friction, how you gathered telemetry, led consensus, and delivered measurable performance gains.',
+      sampleAnswer: 'Situation: Slow checkout API taking 1.8s. Action: Profiled MongoDB query plans and added Redis caching. Result: P99 latency dropped to 140ms and conversions grew 8%.'
+    },
+    {
+      id: 4,
+      type: 'Technical',
+      question: `Explain how JWT authentication works securely in a distributed microservices environment and how you handle token revocation.`,
+      tips: 'Explain asymmetric signing (RS256), short-lived access tokens with HTTP-only refresh tokens, and Redis blocklist for instant logout revocation.',
+      sampleAnswer: '1. Stateless verification using public keys. 2. 15-minute access token lifespan. 3. Distributed Redis token blacklist for immediate forced logouts.'
+    },
+    {
+      id: 5,
+      type: 'Behavioral',
+      question: `Describe a situation where you had a strong technical disagreement with a team member or product manager. How was it resolved?`,
+      tips: 'Focus on empathy, data-driven proofs of concept, alignment with customer needs, and disagree-and-commit maturity.',
+      sampleAnswer: 'Set up an A/B benchmark test to compare both architectures objectively against latency and maintenance cost, reaching unanimous agreement.'
+    }
+  ];
+}
+
+/**
+ * CAREER AI: Mock Interview Answer Evaluator
+ */
+async function evaluateMockAnswer({ question, answer, targetRole }) {
+  const gemini = getGeminiClient();
+  if (gemini) {
+    try {
+      const prompt = `You are an expert interviewer scoring a candidate's response.
+Target Role: ${targetRole || 'Software Engineer'}
+Question: "${question}"
+Candidate's Answer: "${answer}"
+
+Evaluate the response rigorously.
+Return ONLY valid JSON matching:
+{
+  "score": number (0-100),
+  "strengths": [string],
+  "improvements": [string],
+  "improvedAnswer": string,
+  "verdict": "Outstanding" | "Strong" | "Average" | "Needs Improvement"
+}`;
+
+      const response = await gemini.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents: prompt,
+      });
+
+      const text = response.text ? response.text.trim() : '';
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+    } catch (err) {
+      console.warn('Gemini mock answer evaluation fallback:', err.message);
+    }
+  }
+
+  const length = (answer || '').trim().split(/\s+/).length;
+  let score = Math.min(95, Math.max(50, length * 1.5 + 40));
+  
+  return {
+    score,
+    verdict: score >= 85 ? 'Strong' : score >= 70 ? 'Good' : 'Needs Improvement',
+    strengths: [
+      'Directly addresses the core scenario with clear technical terminology.',
+      'Demonstrates practical understanding of engineering trade-offs.'
+    ],
+    improvements: [
+      'Structure the answer using the STAR format (Situation, Task, Action, Result).',
+      'Incorporate specific numerical metrics and percentages to prove business impact.'
+    ],
+    improvedAnswer: `In my previous role, we encountered this exact challenge. I started by analyzing the root telemetry (Situation & Task). I architected a modular solution implementing automated caching and defensive error boundaries (Action). As a result, we reduced system error rates by 42% and delivered ahead of schedule (Result).`
+  };
+}
+
+/**
+ * CAREER AI: Skill Roadmap Generator
+ */
+async function generateSkillRoadmap({ currentSkills, targetRole, timeframe = '90-Days' }) {
+  const role = targetRole || 'Senior Cloud Architect';
+  const skills = (currentSkills && currentSkills.length > 0) ? currentSkills.join(', ') : 'JavaScript, React, Node.js';
+
+  const gemini = getGeminiClient();
+  if (gemini) {
+    try {
+      const prompt = `You are a Principal Career Development Officer.
+Create a high-impact, actionable ${timeframe} Skill Roadmap for transitioning from:
+Current Skills: ${skills}
+Target Goal / Role: ${role}
+
+Return ONLY valid JSON matching:
+{
+  "targetRole": "${role}",
+  "estimatedTimeframe": "${timeframe}",
+  "readinessScore": number (0-100),
+  "phases": [
+    {
+      "phase": "Phase 1: Foundations & Core Architecture (Weeks 1-4)",
+      "focus": "string",
+      "milestones": [string],
+      "recommendedProjects": [string]
+    },
+    {
+      "phase": "Phase 2: Advanced Mastery & Cloud Scale (Weeks 5-8)",
+      "focus": "string",
+      "milestones": [string],
+      "recommendedProjects": [string]
+    },
+    {
+      "phase": "Phase 3: Production Leadership & System Design (Weeks 9-12)",
+      "focus": "string",
+      "milestones": [string],
+      "recommendedProjects": [string]
+    }
+  ],
+  "topCertifications": [string]
+}`;
+
+      const response = await gemini.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents: prompt,
+      });
+
+      const text = response.text ? response.text.trim() : '';
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+      }
+    } catch (err) {
+      console.warn('Gemini roadmap fallback:', err.message);
+    }
+  }
+
+  return {
+    targetRole: role,
+    estimatedTimeframe: timeframe,
+    readinessScore: 78,
+    phases: [
+      {
+        phase: 'Phase 1: Deep Core & Performance Engineering (Month 1)',
+        focus: 'Master concurrency, async patterns, micro-frontends, and database query optimization.',
+        milestones: [
+          'Build a real-time reactive event stream with WebSockets & Redis.',
+          'Implement automated end-to-end test harnesses achieving 90%+ branch coverage.'
+        ],
+        recommendedProjects: ['High-Throughput Analytics Dashboard with SSR & Redis Caching']
+      },
+      {
+        phase: 'Phase 2: Cloud Infrastructure & Containerization (Month 2)',
+        focus: 'Docker container orchestration, Kubernetes, AWS Lambda serverless pipelines, and Terraform.',
+        milestones: [
+          'Deploy multi-region cloud workloads with zero-downtime blue/green deployments.',
+          'Set up automated CI/CD security scanning and Docker multi-stage builds.'
+        ],
+        recommendedProjects: ['Automated Serverless Media Ingestion & Transcoding Pipeline']
+      },
+      {
+        phase: 'Phase 3: Enterprise System Design & Leadership (Month 3)',
+        focus: 'High-availability distributed architectures, CAP theorem trade-offs, and tech mentorship.',
+        milestones: [
+          'Design and document an enterprise-grade payment integration system design doc.',
+          'Lead technical code review workshops and mentor junior engineers.'
+        ],
+        recommendedProjects: ['Distributed Consensus & Leader Election Simulation Engine']
+      }
+    ],
+    topCertifications: [
+      'AWS Certified Solutions Architect – Associate',
+      'Certified Kubernetes Application Developer (CKAD)',
+      'Meta Professional Frontend / Backend Certificate'
+    ]
+  };
 }
 
 module.exports = {
   generateEnhancedSummary,
   generateBulletPoints,
   matchResumeWithJob,
+  generateInterviewQuestions,
+  evaluateMockAnswer,
+  generateSkillRoadmap,
 };

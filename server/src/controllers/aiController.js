@@ -1,7 +1,14 @@
 const Resume = require('../models/Resume');
 const Job = require('../models/Job');
 const ApplicationMatch = require('../models/ApplicationMatch');
-const { generateEnhancedSummary, generateBulletPoints, matchResumeWithJob } = require('../utils/geminiAi');
+const {
+  generateEnhancedSummary,
+  generateBulletPoints,
+  matchResumeWithJob,
+  generateInterviewQuestions,
+  evaluateMockAnswer,
+  generateSkillRoadmap,
+} = require('../utils/geminiAi');
 
 // @desc    Generate / Enhance Professional Summary
 // @route   POST /api/ai/enhance-summary
@@ -190,6 +197,64 @@ exports.applyTailoring = async (req, res) => {
     res.json({ success: true, message: 'Resume successfully tailored and updated!', data: resume });
   } catch (error) {
     console.error('applyTailoring error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    CAREER AI: Generate Interview Questions
+// @route   POST /api/ai/interview-questions
+// @access  Private
+exports.getInterviewQuestions = async (req, res) => {
+  try {
+    const { targetRole, skills, experienceLevel, category } = req.body;
+    const questions = await generateInterviewQuestions({
+      targetRole,
+      skills,
+      experienceLevel,
+      category,
+    });
+    res.json({ success: true, data: questions });
+  } catch (error) {
+    console.error('getInterviewQuestions error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    CAREER AI: Mock Interview Answer Evaluator
+// @route   POST /api/ai/mock-evaluate
+// @access  Private
+exports.evaluateMock = async (req, res) => {
+  try {
+    const { question, answer, targetRole } = req.body;
+    if (!question || !answer) {
+      return res.status(400).json({ success: false, message: 'Question and answer are required.' });
+    }
+    const evaluation = await evaluateMockAnswer({
+      question,
+      answer,
+      targetRole,
+    });
+    res.json({ success: true, data: evaluation });
+  } catch (error) {
+    console.error('evaluateMock error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    CAREER AI: Skill Roadmap
+// @route   POST /api/ai/skill-roadmap
+// @access  Private
+exports.getSkillRoadmap = async (req, res) => {
+  try {
+    const { currentSkills, targetRole, timeframe } = req.body;
+    const roadmap = await generateSkillRoadmap({
+      currentSkills,
+      targetRole,
+      timeframe,
+    });
+    res.json({ success: true, data: roadmap });
+  } catch (error) {
+    console.error('getSkillRoadmap error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
