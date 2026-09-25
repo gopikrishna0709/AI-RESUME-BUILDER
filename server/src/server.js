@@ -12,29 +12,52 @@ connectDB();
 
 const app = express();
 
-// Dynamic CORS for production and development
-const allowedOrigins = [
+// Allowed Origins for Production and Local Development
+const explicitOrigins = [
+  'https://airesume-rouge-phi.vercel.app',
   process.env.CLIENT_URL,
   process.env.FRONTEND_URL,
   'http://localhost:3000',
+  'http://localhost:3001',
   'http://localhost:5173',
   'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
   'http://127.0.0.1:5173',
-].filter(Boolean);
+].filter(Boolean).map(url => url.replace(/\/+$/, '')); // trim any trailing slashes
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, or Postman)
+    // Allow non-browser requests (Postman, curl, server-to-server, mobile)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.length === 0 || allowedOrigins.includes('*') || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+
+    const cleanOrigin = origin.replace(/\/+$/, '');
+    if (
+      explicitOrigins.includes(cleanOrigin) ||
+      cleanOrigin.endsWith('.vercel.app') ||
+      cleanOrigin.includes('localhost') ||
+      cleanOrigin.includes('127.0.0.1')
+    ) {
       return callback(null, true);
     }
-    return callback(null, true); // Permissive fallback to prevent CORS blocks across preview domains
+    // Permissive fallback so dynamic preview deployments work seamlessly
+    return callback(null, true);
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+  ],
+  exposedHeaders: ['Set-Cookie'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable preflight across all routes
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(morgan('dev'));
