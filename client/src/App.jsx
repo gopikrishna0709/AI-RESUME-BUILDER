@@ -1,0 +1,379 @@
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
+import AuthModal from './components/AuthModal';
+import ResumeEditor from './components/builder/ResumeEditor';
+import ResumePreview from './components/builder/ResumePreview';
+import JobMatcherDashboard from './components/matcher/JobMatcherDashboard';
+import JobBoard from './components/jobs/JobBoard';
+import MatchHistory from './components/history/MatchHistory';
+import { resumeAPI } from './services/api';
+import { useAuth } from './context/AuthContext';
+import { Sparkles, Plus, Copy, Trash2, FileCheck, Layers, LayoutTemplate, Eye, Edit3 } from 'lucide-react';
+
+const DEFAULT_RESUME = {
+  title: 'Full Stack Engineer Resume',
+  targetJobTitle: 'Senior Full Stack Engineer',
+  template: 'modern-tech',
+  theme: {
+    primaryColor: '#2563eb',
+    fontFamily: 'Inter',
+    fontSize: 'normal',
+    spacing: 'normal',
+  },
+  personalInfo: {
+    fullName: 'Alex Rivera',
+    headline: 'Senior Full Stack Engineer | React, Node.js, Cloud',
+    email: 'alex.rivera@example.com',
+    phone: '+1 (555) 234-5678',
+    location: 'San Francisco, CA (Remote)',
+    portfolioUrl: 'https://alexrivera.dev',
+    linkedinUrl: 'https://linkedin.com/in/alexrivera-dev',
+    githubUrl: 'https://github.com/alexrivera',
+  },
+  summary: 'Results-driven Senior Full Stack Engineer with 6+ years of experience architecting high-scale distributed systems and user-centric web applications. Expert in React, Node.js, TypeScript, and AWS cloud infrastructure. Led cross-functional teams to accelerate product release cycles by 40% and engineered real-time microservices handling over 25M daily requests.',
+  experience: [
+    {
+      title: 'Senior Full Stack Engineer',
+      company: 'Apex Cloud Solutions',
+      location: 'San Francisco, CA',
+      startDate: 'Jan 2022',
+      endDate: 'Present',
+      current: true,
+      bullets: [
+        'Architected and led the migration of a monolithic web app to a micro-frontend architecture using React, Vite, and GraphQL, decreasing initial load times by 48%.',
+        'Spearheaded the development of real-time collaborative workspace features supporting 150K+ active concurrent users with WebSocket & Redis caching.',
+        'Engineered automated CI/CD pipelines with GitHub Actions and Docker, reducing build-to-deploy deployment time from 45 minutes to 7 minutes.',
+      ],
+    },
+    {
+      title: 'Full Stack Software Engineer',
+      company: 'Pulse Digital Technologies',
+      location: 'Austin, TX',
+      startDate: 'Aug 2019',
+      endDate: 'Dec 2021',
+      current: false,
+      bullets: [
+        'Developed and maintained 12+ scalable RESTful APIs in Node.js/Express and MongoDB Atlas for enterprise fintech clients.',
+        'Implemented Stripe billing and automated subscription workflows, processing over $4.2M in annual recurring revenue with zero downtime.',
+      ],
+    },
+  ],
+  education: [
+    {
+      degree: 'Bachelor of Science',
+      fieldOfStudy: 'Computer Science',
+      institution: 'University of California, Berkeley',
+      graduationYear: '2019',
+      gpa: '3.85',
+    },
+  ],
+  skillGroups: [
+    {
+      category: 'Frontend & UI',
+      items: ['React.js', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Redux / Zustand', 'HTML5/CSS3'],
+    },
+    {
+      category: 'Backend & Cloud',
+      items: ['Node.js', 'Express', 'Python', 'REST APIs', 'GraphQL', 'AWS', 'Docker', 'Microservices'],
+    },
+    {
+      category: 'Databases & Tools',
+      items: ['MongoDB Atlas', 'PostgreSQL', 'Redis', 'Git / GitHub', 'Jest / Cypress', 'CI/CD'],
+    },
+  ],
+  projects: [
+    {
+      name: 'DevFlow - AI Code Review Assistant',
+      role: 'Creator & Lead',
+      url: 'https://devflow.app',
+      techStack: ['React', 'Node.js', 'Gemini AI', 'MongoDB'],
+      description: 'Automated AI code review assistant that analyzes pull requests and suggests performance patches.',
+      bullets: ['Implemented automated PR webhooks integrated with Gemini models to deliver instant contextual code reviews.'],
+    },
+  ],
+  certifications: [
+    {
+      name: 'AWS Certified Solutions Architect',
+      issuer: 'Amazon Web Services',
+      issueDate: '2023',
+    },
+  ],
+  atsScore: 94,
+};
+
+export default function App() {
+  const { isAuthenticated, user, demoLogin } = useAuth();
+  const [activeTab, setActiveTab] = useState('builder'); // 'builder' | 'matcher' | 'jobs' | 'history'
+  const [resumes, setResumes] = useState([]);
+  const [activeResume, setActiveResume] = useState(DEFAULT_RESUME);
+  const [isSaving, setIsSaving] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [mobileBuilderView, setMobileBuilderView] = useState('editor'); // 'editor' | 'preview'
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3500);
+  };
+
+  // Load resumes
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadResumes();
+    } else {
+      // Auto-start demo session if no token for instant zero-friction trial
+      demoLogin().catch(() => {});
+    }
+  }, [isAuthenticated]);
+
+  const loadResumes = async () => {
+    try {
+      const res = await resumeAPI.getResumes();
+      if (res.data.success && res.data.data.length > 0) {
+        setResumes(res.data.data);
+        setActiveResume(res.data.data[0]);
+      }
+    } catch (err) {
+      console.error('Failed to load user resumes:', err);
+    }
+  };
+
+  const handleSaveResume = async () => {
+    try {
+      setIsSaving(true);
+      if (activeResume._id) {
+        const res = await resumeAPI.updateResume(activeResume._id, activeResume);
+        if (res.data.success) {
+          setActiveResume(res.data.data);
+          showToast('Resume saved successfully to MongoDB Atlas!');
+        }
+      } else {
+        const res = await resumeAPI.createResume(activeResume);
+        if (res.data.success) {
+          setActiveResume(res.data.data);
+          loadResumes();
+          showToast('New resume created successfully!');
+        }
+      }
+    } catch (err) {
+      console.error('Save error:', err);
+      showToast('Error saving resume. Changes kept locally.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCreateNewResume = async () => {
+    try {
+      const res = await resumeAPI.createResume({
+        title: `Resume ${resumes.length + 1}`,
+        targetJobTitle: 'Full Stack Engineer',
+        preset: 'software-engineer',
+      });
+      if (res.data.success) {
+        setResumes([res.data.data, ...resumes]);
+        setActiveResume(res.data.data);
+        showToast('Created new resume from template!');
+      }
+    } catch (err) {
+      console.error('Create error:', err);
+    }
+  };
+
+  const handleDuplicateResume = async () => {
+    if (!activeResume._id) return;
+    try {
+      const res = await resumeAPI.duplicateResume(activeResume._id);
+      if (res.data.success) {
+        setResumes([res.data.data, ...resumes]);
+        setActiveResume(res.data.data);
+        showToast('Duplicated resume successfully!');
+      }
+    } catch (err) {
+      console.error('Duplicate error:', err);
+    }
+  };
+
+  const handleUpdateTheme = (themeUpdates) => {
+    setActiveResume((prev) => ({
+      ...prev,
+      theme: { ...(prev.theme || {}), ...themeUpdates },
+    }));
+  };
+
+  const handleSelectTemplate = (templateId) => {
+    setActiveResume((prev) => ({
+      ...prev,
+      template: templateId,
+    }));
+  };
+
+  const handleResumeUpdatedFromMatcher = (updatedResume) => {
+    setActiveResume(updatedResume);
+    loadResumes();
+    showToast('✨ Resume updated with AI tailored skills & summary!');
+  };
+
+  const handleSelectJobForMatch = (jobId) => {
+    setActiveTab('matcher');
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
+      <Navbar
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        resumeCount={resumes.length}
+      />
+
+      <AuthModal />
+
+      {/* Floating Toast */}
+      {toastMessage && (
+        <div className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 bg-slate-900/95 backdrop-blur-xl border border-blue-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-slideUp">
+          <FileCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Main Container */}
+      <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto pb-24 md:pb-8">
+        {/* Tab 1: Builder */}
+        {activeTab === 'builder' && (
+          <div className="space-y-4">
+            {/* Top Resume Selector Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/60 border border-slate-800/80 p-3 sm:px-4 sm:py-3 rounded-2xl">
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 shrink-0">
+                  <LayoutTemplate className="w-4 h-4 text-blue-400" />
+                  <span className="hidden xs:inline">Resume:</span>
+                </div>
+
+                <select
+                  value={activeResume._id || ''}
+                  onChange={(e) => {
+                    const found = resumes.find((r) => r._id === e.target.value);
+                    if (found) setActiveResume(found);
+                  }}
+                  className="flex-1 sm:flex-none bg-slate-950 border border-slate-700 text-xs rounded-xl px-3 py-1.5 text-white font-medium focus:outline-none focus:border-blue-500"
+                >
+                  {resumes.map((r) => (
+                    <option key={r._id} value={r._id}>
+                      {r.title} ({r.template})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Mobile View Toggle & Action Buttons */}
+              <div className="flex items-center justify-between sm:justify-end gap-2">
+                {/* Mobile Editor/Preview Toggle Pill */}
+                <div className="flex lg:hidden bg-slate-950 p-0.5 rounded-xl border border-slate-800 text-xs font-semibold">
+                  <button
+                    onClick={() => setMobileBuilderView('editor')}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-lg transition-all ${
+                      mobileBuilderView === 'editor'
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    onClick={() => setMobileBuilderView('preview')}
+                    className={`flex items-center gap-1 px-3 py-1 rounded-lg transition-all ${
+                      mobileBuilderView === 'preview'
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Preview</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <button
+                    onClick={handleCreateNewResume}
+                    className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span className="hidden xs:inline">New</span>
+                  </button>
+
+                  <button
+                    onClick={handleDuplicateResume}
+                    className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span className="hidden xs:inline">Clone</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActiveTab('matcher')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-xs font-bold shadow-md shadow-purple-500/20 transition-all"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span className="hidden sm:inline">Test ATS</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Dual Pane on Desktop / Responsive View on Mobile */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Left Form: Editor */}
+              <div
+                className={`lg:col-span-6 h-[750px] sm:h-[820px] ${
+                  mobileBuilderView === 'preview' ? 'hidden lg:block' : 'block'
+                }`}
+              >
+                <ResumeEditor
+                  resume={activeResume}
+                  onChange={setActiveResume}
+                  onSave={handleSaveResume}
+                  isSaving={isSaving}
+                />
+              </div>
+
+              {/* Right Pane: Live Multi-Template Preview */}
+              <div
+                className={`lg:col-span-6 h-[750px] sm:h-[820px] ${
+                  mobileBuilderView === 'editor' ? 'hidden lg:block' : 'block'
+                }`}
+              >
+                <ResumePreview
+                  resume={activeResume}
+                  onUpdateTheme={handleUpdateTheme}
+                  onSelectTemplate={handleSelectTemplate}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 2: AI Job Matcher */}
+        {activeTab === 'matcher' && (
+          <JobMatcherDashboard
+            activeResume={activeResume}
+            onResumeUpdated={handleResumeUpdatedFromMatcher}
+          />
+        )}
+
+        {/* Tab 3: Browse Jobs */}
+        {activeTab === 'jobs' && (
+          <JobBoard onSelectJobForMatch={handleSelectJobForMatch} />
+        )}
+
+        {/* Tab 4: Match History */}
+        {activeTab === 'history' && (
+          <MatchHistory
+            onOpenMatcherWithRecord={(rec) => {
+              setActiveTab('matcher');
+            }}
+          />
+        )}
+      </main>
+    </div>
+  );
+}
