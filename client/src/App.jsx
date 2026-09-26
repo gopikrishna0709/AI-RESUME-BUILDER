@@ -105,8 +105,19 @@ const DEFAULT_RESUME = {
 };
 
 export default function App() {
-  const { isAuthenticated, logout, openAuthModal } = useAuth();
-  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'builder' | 'matcher' | 'tools' | 'jobs' | 'career'
+  const { isAuthenticated, loading, logout, openAuthModal } = useAuth();
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const hash = window.location.hash.replace('#', '');
+      const validTabs = ['home', 'builder', 'matcher', 'tools', 'jobs', 'career'];
+      if (validTabs.includes(hash)) return hash;
+      const saved = sessionStorage.getItem('resumai_active_tab');
+      if (validTabs.includes(saved)) return saved;
+      return 'home';
+    } catch {
+      return 'home';
+    }
+  });
   const [resumes, setResumes] = useState([]);
   const [activeResume, setActiveResume] = useState(DEFAULT_RESUME);
   const [isSaving, setIsSaving] = useState(false);
@@ -125,14 +136,39 @@ export default function App() {
     }
   }, [isAuthenticated]);
 
-  // Route Protection: Prevent unauthenticated users from staying on protected workspaces
+  // Route Protection: Guard protected workspaces only AFTER initial auth check completes
   useEffect(() => {
+    if (loading) return; // Do not prematurely redirect while checking token
     const protectedTabs = ['builder', 'matcher', 'tools', 'jobs', 'career'];
     if (!isAuthenticated && protectedTabs.includes(activeTab)) {
       setActiveTab('home');
+      window.location.hash = 'home';
       openAuthModal('login');
     }
-  }, [isAuthenticated, activeTab]);
+  }, [isAuthenticated, loading, activeTab]);
+
+  // Browser Navigation & Hash Sync
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      const validTabs = ['home', 'builder', 'matcher', 'tools', 'jobs', 'career'];
+      if (validTabs.includes(hash)) {
+        if (!isAuthenticated && hash !== 'home') {
+          setActiveTab('home');
+          window.location.hash = 'home';
+          openAuthModal('login');
+        } else {
+          setActiveTab(hash);
+          try {
+            sessionStorage.setItem('resumai_active_tab', hash);
+          } catch (e) {}
+        }
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [isAuthenticated, loading]);
 
   const loadResumes = async () => {
     try {
@@ -162,6 +198,10 @@ export default function App() {
       return;
     }
     setActiveTab(tabId);
+    window.location.hash = tabId;
+    try {
+      sessionStorage.setItem('resumai_active_tab', tabId);
+    } catch (e) {}
   };
 
   // Complete Logout Workflow
@@ -170,6 +210,10 @@ export default function App() {
     setResumes([]);
     setActiveResume(DEFAULT_RESUME);
     setActiveTab('home');
+    window.location.hash = 'home';
+    try {
+      sessionStorage.removeItem('resumai_active_tab');
+    } catch (e) {}
     showToast('Logged out successfully');
     openAuthModal('login');
   };

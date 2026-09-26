@@ -134,7 +134,7 @@ export const AuthProvider = ({ children }) => {
         authModalMode,
         openAuthModal,
         closeAuthModal,
-        isAuthenticated: !!user,
+        isAuthenticated: Boolean(user && token),
       }}
     >
       {children}
