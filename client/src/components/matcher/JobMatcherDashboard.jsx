@@ -196,7 +196,7 @@ export default function JobMatcherDashboard({
         {/* Left Column: Input Selection */}
         <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           {/* Step 1: Select Candidate Resume */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-3">
+          <div className="interactive-card rounded-2xl p-4 sm:p-5 shadow-subtle space-y-3 animate-card-entrance stagger-1">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-surface-text uppercase tracking-wider flex items-center gap-2">
                 <FileText className="w-4 h-4 text-plum-800 dark:text-plum-300 shrink-0" />
@@ -219,7 +219,7 @@ export default function JobMatcherDashboard({
           </div>
 
           {/* Step 2: Job Description Setup */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-4">
+          <div className="interactive-card rounded-2xl p-4 sm:p-5 shadow-subtle space-y-4 animate-card-entrance stagger-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <label className="text-xs font-bold text-surface-text uppercase tracking-wider flex items-center gap-2">
                 <Briefcase className="w-4 h-4 text-terracotta-500 shrink-0" />
@@ -341,7 +341,7 @@ export default function JobMatcherDashboard({
         {/* Right Column: Match Report & Skill Gap Analysis */}
         <div className="lg:col-span-7">
           {matchResult ? (
-            <div className="bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-7 shadow-card space-y-5 sm:space-y-6">
+            <div className="interactive-card rounded-3xl p-5 sm:p-7 shadow-card space-y-5 sm:space-y-6 animate-card-entrance stagger-1">
               {/* Header Report Card */}
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 sm:pb-5 border-b border-surface-border">
                 <div className="min-w-0">

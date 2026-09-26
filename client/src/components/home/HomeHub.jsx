@@ -177,7 +177,7 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
         </div>
 
         {/* Right Column: Independent Solid Live Matching Pipeline Card */}
-        <div className="lg:col-span-5 bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-6 space-y-3.5 shadow-card">
+        <div className="lg:col-span-5 interactive-card rounded-3xl p-5 sm:p-6 space-y-3.5 shadow-card animate-card-entrance stagger-1">
           <div className="flex items-center justify-between pb-3 border-b border-surface-border">
             <span className="text-[11px] font-bold text-surface-muted uppercase tracking-wider">
               Live Matching Pipeline
