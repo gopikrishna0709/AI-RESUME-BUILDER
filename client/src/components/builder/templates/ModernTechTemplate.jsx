@@ -13,7 +13,7 @@ export default function ModernTechTemplate({ resume }) {
     theme = {},
   } = resume;
 
-  const primaryColor = theme?.primaryColor || '#2563eb';
+  const primaryColor = theme?.primaryColor || '#4A1525';
 
   return (
     <div className="resume-paper p-8 text-slate-800 font-sans leading-relaxed text-sm bg-white" id="resume-document">

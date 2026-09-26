@@ -7,13 +7,13 @@ import {
   Sparkles,
   ExternalLink,
   CheckCircle2,
-  Building,
+  Building2,
   Bookmark,
-  BookmarkCheck,
   History,
   Calendar,
   Layers,
   ArrowRight,
+  Filter,
 } from 'lucide-react';
 import { jobAPI, aiAPI } from '../../services/api';
 
@@ -28,7 +28,7 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
   // Saved Jobs tracking in localStorage
   const [savedJobIds, setSavedJobIds] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('resumai_saved_jobs') || '[]');
+      return JSON.parse(localStorage.getItem('careermatch_saved_jobs') || '[]');
     } catch {
       return [];
     }
@@ -85,7 +85,7 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
       ? savedJobIds.filter((id) => id !== jobId)
       : [...savedJobIds, jobId];
     setSavedJobIds(next);
-    localStorage.setItem('resumai_saved_jobs', JSON.stringify(next));
+    localStorage.setItem('careermatch_saved_jobs', JSON.stringify(next));
   };
 
   const calculateQuickMatchScore = (job) => {
@@ -100,80 +100,82 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
   const filteredJobs = activeSubTab === 'saved' ? jobs.filter((j) => savedJobIds.includes(j._id)) : jobs;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto pb-8">
       {/* Header */}
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs font-semibold border border-amber-500/30 mb-2">
-          <Briefcase className="w-3.5 h-3.5 text-amber-400" />
-          <span>Job Recommendations & Applications Tracker</span>
+      <div className="bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 shadow-card transition-colors duration-200">
+        <div className="max-w-3xl space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 text-xs font-bold border border-amber-200 dark:border-amber-800">
+            <Briefcase className="w-3.5 h-3.5 text-amber-600" />
+            <span>Opportunities & Application Tracker</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-surface-text tracking-tight font-display">
+            Job Recommendations & Matches
+          </h2>
+          <p className="text-surface-muted text-xs sm:text-sm leading-relaxed">
+            Discover roles scored against your candidate profile, save opportunities to your shortlist, and review your historical match scans.
+          </p>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Opportunities & Applications
-        </h2>
-        <p className="text-slate-400 text-xs sm:text-sm mt-1">
-          Explore roles scored against your active resume, manage your saved shortlist, and review past ATS scans.
-        </p>
       </div>
 
-      {/* Sub Tabs & Search Filters */}
+      {/* Sub Tabs & Filters Bar */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        {/* Tabs */}
-        <div className="flex bg-slate-900/90 border border-slate-800 rounded-2xl p-1.5 gap-1 text-xs">
+        {/* Navigation Tabs */}
+        <div className="flex bg-surface-elevated border border-surface-border rounded-2xl p-1 gap-1 text-xs">
           <button
             onClick={() => setActiveSubTab('recommended')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold transition-all ${
               activeSubTab === 'recommended'
-                ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                : 'text-surface-muted hover:text-surface-text'
             }`}
           >
-            <Briefcase className="w-3.5 h-3.5" />
+            <Briefcase className="w-3.5 h-3.5 text-terracotta-300" />
             <span>Recommended ({jobs.length})</span>
           </button>
           <button
             onClick={() => setActiveSubTab('saved')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold transition-all ${
               activeSubTab === 'saved'
-                ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                : 'text-surface-muted hover:text-surface-text'
             }`}
           >
-            <Bookmark className="w-3.5 h-3.5" />
+            <Bookmark className="w-3.5 h-3.5 text-amber-400" />
             <span>Saved Jobs ({savedJobIds.length})</span>
           </button>
           <button
             onClick={() => setActiveSubTab('history')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-bold transition-all ${
               activeSubTab === 'history'
-                ? 'bg-amber-600 text-white shadow-md shadow-amber-600/20'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                : 'text-surface-muted hover:text-surface-text'
             }`}
           >
-            <History className="w-3.5 h-3.5" />
+            <History className="w-3.5 h-3.5 text-sage-400" />
             <span>Match History</span>
           </button>
         </div>
 
-        {/* Search & Filters */}
+        {/* Search & Filter Inputs */}
         {activeSubTab !== 'history' && (
           <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
             <div className="relative flex-1 sm:w-60">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-surface-muted absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Filter title, skills..."
+                placeholder="Filter title, company, skill..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                className="w-full bg-surface-card border border-surface-border rounded-xl pl-9 pr-3 py-2 text-xs text-surface-text focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
 
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+              className="bg-surface-card border border-surface-border rounded-xl px-3 py-2 text-xs text-surface-text focus:outline-none focus:border-plum-600 font-semibold"
             >
-              <option value="All">All Types</option>
+              <option value="All">All Job Types</option>
               <option value="Full-time">Full-time</option>
               <option value="Contract">Contract</option>
               <option value="Remote">Remote</option>
@@ -181,10 +183,10 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
 
             <button
               onClick={() => setRemoteOnly(!remoteOnly)}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all ${
                 remoteOnly
-                  ? 'bg-amber-600/30 text-amber-300 border-amber-500/50'
-                  : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
+                  ? 'bg-plum-50 dark:bg-plum-950/80 text-plum-900 dark:text-plum-200 border-plum-300 dark:border-plum-700'
+                  : 'bg-surface-card text-surface-muted border-surface-border hover:text-surface-text'
               }`}
             >
               🌐 Remote Only
@@ -193,20 +195,22 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
         )}
       </div>
 
-      {/* Jobs View */}
+      {/* 11. Distinctive Job Recommendations Grid */}
       {activeSubTab !== 'history' ? (
         loading ? (
-          <div className="py-20 text-center text-slate-400 text-xs">Loading opportunities...</div>
+          <div className="py-20 text-center text-surface-muted text-xs font-semibold">
+            Loading opportunities tailored to your profile...
+          </div>
         ) : filteredJobs.length === 0 ? (
-          <div className="py-16 text-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8">
-            <Bookmark className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-            <p className="text-slate-300 font-semibold text-sm">
-              {activeSubTab === 'saved' ? 'No saved jobs yet' : 'No jobs matched your filter'}
+          <div className="py-16 text-center bg-surface-card border border-surface-border rounded-3xl p-8 space-y-2">
+            <Bookmark className="w-8 h-8 text-surface-muted mx-auto" />
+            <p className="text-surface-text font-bold text-sm">
+              {activeSubTab === 'saved' ? 'No saved positions yet' : 'No jobs matched your filter query'}
             </p>
-            <p className="text-slate-500 text-xs mt-1">
+            <p className="text-surface-muted text-xs">
               {activeSubTab === 'saved'
-                ? 'Click the bookmark icon on any job card to add it to your shortlist.'
-                : 'Try adjusting your search keywords.'}
+                ? 'Click the bookmark icon on any job card to save it for quick reference.'
+                : 'Try adjusting your search terms or filters.'}
             </p>
           </div>
         ) : (
@@ -218,35 +222,35 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
               return (
                 <div
                   key={job._id}
-                  className="bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 rounded-3xl p-5 shadow-xl transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between gap-4"
+                  className="bg-surface-card border border-surface-border hover:border-plum-500/50 rounded-3xl p-5 sm:p-6 shadow-subtle hover:shadow-card transition-all duration-200 flex flex-col justify-between gap-4"
                 >
                   <div className="space-y-3">
                     <div className="flex justify-between items-start gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center text-2xl shrink-0">
-                          {job.logo || <Building className="w-5 h-5 text-amber-400" />}
+                        <div className="w-11 h-11 rounded-xl bg-surface-elevated border border-surface-border flex items-center justify-center text-2xl shrink-0 font-bold text-plum-900 dark:text-plum-200">
+                          {job.logo || <Building2 className="w-5 h-5 text-terracotta-500" />}
                         </div>
                         <div>
-                          <h3 className="font-bold text-white text-sm sm:text-base hover:text-amber-400 transition-colors">
+                          <h3 className="font-bold text-surface-text text-sm sm:text-base leading-snug hover:text-plum-900 dark:hover:text-plum-300 transition-colors">
                             {job.title}
                           </h3>
-                          <div className="text-slate-400 text-xs font-medium">{job.company}</div>
+                          <div className="text-surface-muted text-xs font-semibold">{job.company}</div>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2">
                         {/* Match Score Badge */}
-                        <div className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-blue-900/40 to-emerald-900/40 border border-emerald-500/30 text-emerald-300 text-xs font-bold">
+                        <div className="px-2.5 py-1 rounded-xl bg-plum-50 dark:bg-plum-950/80 border border-plum-200 dark:border-plum-800 text-plum-900 dark:text-plum-200 text-xs font-extrabold">
                           {matchScore}% Match
                         </div>
 
-                        {/* Bookmark Button */}
+                        {/* Save Bookmark */}
                         <button
                           onClick={() => toggleSaveJob(job._id)}
                           className={`p-2 rounded-xl border transition-all ${
                             isSaved
-                              ? 'bg-amber-600/30 text-amber-400 border-amber-500/40'
-                              : 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
+                              ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                              : 'bg-surface-elevated text-surface-muted border-surface-border hover:text-surface-text'
                           }`}
                           title={isSaved ? 'Remove from Saved' : 'Save Job'}
                         >
@@ -255,16 +259,16 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
                       </div>
                     </div>
 
-                    <p className="text-slate-300 text-xs line-clamp-2 leading-relaxed">
+                    <p className="text-surface-text text-xs line-clamp-2 leading-relaxed opacity-90">
                       {job.description}
                     </p>
 
-                    {/* Skill Tags */}
+                    {/* Skill Chips */}
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {(job.requiredSkills || []).slice(0, 5).map((sk, idx) => (
                         <span
                           key={idx}
-                          className="bg-slate-800/90 text-slate-300 border border-slate-700/60 px-2 py-0.5 rounded-lg text-[11px]"
+                          className="bg-surface-elevated text-surface-text border border-surface-border px-2.5 py-0.5 rounded-lg text-[11px] font-semibold"
                         >
                           {sk}
                         </span>
@@ -272,25 +276,25 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
                     </div>
                   </div>
 
-                  {/* Bottom Meta & Action */}
-                  <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between gap-2 text-xs">
-                    <div className="flex items-center gap-3 text-slate-400 text-[11px]">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3 text-slate-500" />
+                  {/* Card Bottom Meta & Match CTA */}
+                  <div className="pt-3 border-t border-surface-border flex items-center justify-between gap-2 text-xs">
+                    <div className="flex items-center gap-3 text-surface-muted text-[11px]">
+                      <span className="flex items-center gap-1 font-medium">
+                        <MapPin className="w-3.5 h-3.5" />
                         {job.location}
                       </span>
-                      <span className="flex items-center gap-1 font-semibold text-emerald-400">
-                        <DollarSign className="w-3 h-3 text-emerald-500" />
+                      <span className="flex items-center gap-1 font-bold text-sage-700 dark:text-sage-400">
+                        <DollarSign className="w-3.5 h-3.5" />
                         {job.salaryRange}
                       </span>
                     </div>
 
                     <button
                       onClick={() => onSelectJobForMatch(job._id)}
-                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md shadow-amber-600/20 transition-all"
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs shadow-subtle active:scale-[0.98] transition-all"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Match with AI</span>
+                      <Sparkles className="w-3.5 h-3.5 text-terracotta-300" />
+                      <span>Analyze Match</span>
                     </button>
                   </div>
                 </div>
@@ -299,40 +303,40 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
           </div>
         )
       ) : (
-        /* Match History View */
+        /* Match History Tab */
         <div className="space-y-3">
           {loadingMatches ? (
-            <div className="py-20 text-center text-slate-400 text-xs">Loading match records...</div>
+            <div className="py-20 text-center text-surface-muted text-xs font-semibold">Loading scan history...</div>
           ) : matches.length === 0 ? (
-            <div className="py-16 text-center bg-slate-900/40 border border-slate-800 rounded-3xl p-8">
-              <History className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-              <p className="text-slate-300 font-semibold text-sm">No match scans recorded yet</p>
-              <p className="text-slate-500 text-xs mt-1">
-                Run an evaluation in the AI Job Matcher tab to see application logs here.
+            <div className="py-16 text-center bg-surface-card border border-surface-border rounded-3xl p-8 space-y-2">
+              <History className="w-8 h-8 text-surface-muted mx-auto" />
+              <p className="text-surface-text font-bold text-sm">No match records logged yet</p>
+              <p className="text-surface-muted text-xs">
+                Run an ATS evaluation in the Job Matcher tab to see application records here.
               </p>
             </div>
           ) : (
             matches.map((item) => (
               <div
                 key={item._id}
-                className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+                className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-subtle"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-white text-sm sm:text-base">{item.jobTitle}</span>
-                    {item.company && <span className="text-slate-400 text-xs">at {item.company}</span>}
+                    <span className="font-bold text-surface-text text-sm sm:text-base">{item.jobTitle}</span>
+                    {item.company && <span className="text-surface-muted text-xs">at {item.company}</span>}
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
                         item.status === 'Applied'
-                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                          : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                          ? 'bg-sage-100 dark:bg-sage-950 text-sage-800 dark:text-sage-300 border border-sage-200'
+                          : 'bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200'
                       }`}
                     >
                       {item.status}
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-surface-muted">
                     <span>Resume: {item.resumeId?.title || 'General'}</span>
                     <span>
                       {new Date(item.createdAt).toLocaleDateString(undefined, {
@@ -346,10 +350,10 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
 
                 <div className="flex items-center gap-4">
                   <div className="text-right">
-                    <div className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+                    <div className="text-xl font-black text-plum-900 dark:text-plum-200 font-display">
                       {item.overallMatchScore}%
                     </div>
-                    <div className="text-[10px] text-slate-400 font-bold uppercase">Match Score</div>
+                    <div className="text-[10px] text-surface-muted font-bold uppercase">Compatibility</div>
                   </div>
                 </div>
               </div>

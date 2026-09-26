@@ -2,17 +2,15 @@ import React, { useState } from 'react';
 import {
   Sparkles,
   FileText,
-  Wrench,
   CheckCircle2,
   Copy,
   RotateCw,
   Zap,
   Target,
-  Sliders,
   ShieldCheck,
-  TrendingUp,
   Check,
   Award,
+  ArrowRight,
 } from 'lucide-react';
 import { aiAPI } from '../../services/api';
 import confetti from 'canvas-confetti';
@@ -22,7 +20,7 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
   
   // Summary Tool State
   const [summaryRole, setSummaryRole] = useState(activeResume?.targetJobTitle || activeResume?.personalInfo?.headline || 'Senior Full Stack Engineer');
-  const [summaryLevel, setSummaryLevel] = useState('Senior / Staff');
+  const [summaryLevel, setSummaryLevel] = useState('Senior Level');
   const [summaryInput, setSummaryInput] = useState(activeResume?.summary || '');
   const [generatedSummary, setGeneratedSummary] = useState('');
   const [loadingSummary, setLoadingSummary] = useState(false);
@@ -30,8 +28,8 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
 
   // Bullets Tool State
   const [bulletRole, setBulletRole] = useState(activeResume?.experience?.[0]?.title || 'Software Engineer');
-  const [bulletCompany, setBulletCompany] = useState(activeResume?.experience?.[0]?.company || 'Tech Organization');
-  const [bulletNotes, setBulletNotes] = useState('Built APIs, reduced load times, managed database queries and CI/CD pipelines');
+  const [bulletCompany, setBulletCompany] = useState(activeResume?.experience?.[0]?.company || 'Tech Company');
+  const [bulletNotes, setBulletNotes] = useState('Engineered backend APIs, optimized SQL queries, and reduced build pipelines');
   const [bulletCount, setBulletCount] = useState(3);
   const [generatedBullets, setGeneratedBullets] = useState([]);
   const [loadingBullets, setLoadingBullets] = useState(false);
@@ -103,29 +101,29 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
 
   // ATS Audit metrics
   const hasSummary = Boolean(activeResume?.summary && activeResume.summary.length > 50);
-  const hasExp = (activeResume?.experience || []).length > 0;
-  const hasSkills = (activeResume?.skillGroups || []).length > 0;
-  const hasEdu = (activeResume?.education || []).length > 0;
   const totalBullets = (activeResume?.experience || []).reduce((acc, e) => acc + (e.bullets?.length || 0), 0);
+  const skillCount = (activeResume?.skillGroups || []).reduce((acc, g) => acc + (g.items?.length || 0), 0);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto pb-8">
       {/* Header */}
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 text-xs font-semibold border border-purple-500/30 mb-2">
-          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-          <span>Generative AI Resume Studio</span>
+      <div className="bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 shadow-card transition-colors duration-200">
+        <div className="max-w-3xl space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 text-xs font-bold border border-amber-200 dark:border-amber-800">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>AI Resume Optimization Studio</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-surface-text tracking-tight font-display">
+            Generative AI Resume Tools
+          </h2>
+          <p className="text-surface-muted text-xs sm:text-sm leading-relaxed">
+            Polish role summaries, craft high-impact STAR bullet points with measurable metrics, and audit your resume against ATS benchmarks.
+          </p>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          AI Resume Optimization Tools
-        </h2>
-        <p className="text-slate-400 text-xs sm:text-sm mt-1">
-          Polish summaries, generate high-impact STAR bullet points, and audit your ATS score with Google Gemini.
-        </p>
       </div>
 
       {/* Sub Tabs */}
-      <div className="flex bg-slate-900/90 border border-slate-800 rounded-2xl p-1.5 gap-1 text-xs max-w-md">
+      <div className="flex bg-surface-elevated border border-surface-border rounded-2xl p-1 gap-1 text-xs max-w-md">
         {[
           { id: 'summary', label: 'AI Summary Studio', icon: FileText },
           { id: 'bullets', label: 'STAR Bullet Generator', icon: Zap },
@@ -137,13 +135,13 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
             <button
               key={tab.id}
               onClick={() => setActiveSubTab(tab.id)}
-              className={`flex items-center justify-center gap-1.5 flex-1 py-2 px-3 rounded-xl font-semibold transition-all ${
+              className={`flex items-center justify-center gap-1.5 flex-1 py-2 px-3 rounded-xl font-bold transition-all ${
                 isActive
-                  ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                  : 'text-surface-muted hover:text-surface-text'
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-terracotta-300' : 'text-surface-muted'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -152,73 +150,75 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
 
       {/* Tab 1: Summary Studio */}
       {activeSubTab === 'summary' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <FileText className="w-4 h-4 text-purple-400" />
-              Summary Configuration
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="lg:col-span-5 bg-surface-card border border-surface-border rounded-3xl p-6 shadow-card space-y-4">
+            <h3 className="text-sm font-bold text-surface-text flex items-center gap-2">
+              <FileText className="w-4 h-4 text-plum-800 dark:text-plum-300" />
+              <span>Summary Configuration</span>
             </h3>
 
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Target Professional Role</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Target Professional Role</label>
               <input
                 type="text"
                 value={summaryRole}
                 onChange={(e) => setSummaryRole(e.target.value)}
-                placeholder="e.g. Lead React Architect"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-xs"
+                placeholder="e.g. Lead React Developer"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Experience Level Persona</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Experience Level</label>
               <select
                 value={summaryLevel}
                 onChange={(e) => setSummaryLevel(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-xs"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-semibold"
               >
-                <option value="Entry Level / New Grad">Entry Level / New Grad</option>
-                <option value="Mid Level Professional">Mid Level Professional (2-5 yrs)</option>
-                <option value="Senior / Staff">Senior / Staff (5-10 yrs)</option>
-                <option value="Principal / Engineering Lead">Principal / Engineering Lead</option>
-                <option value="Executive / Director">Executive / Director</option>
+                <option value="Entry Level">Entry Level / Graduate</option>
+                <option value="Mid Level">Mid Level Professional (2-5 yrs)</option>
+                <option value="Senior Level">Senior Level (5-10 yrs)</option>
+                <option value="Staff / Principal">Staff / Principal Architect</option>
+                <option value="Executive / Leadership">Executive / Engineering Director</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Current Draft / Notes (Optional)</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Rough Notes or Existing Draft</label>
               <textarea
                 rows={4}
                 value={summaryInput}
                 onChange={(e) => setSummaryInput(e.target.value)}
-                placeholder="Paste your rough career notes or existing summary here..."
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-xs leading-relaxed"
+                placeholder="Paste key achievements, years of experience, or main technologies..."
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl p-3 text-surface-text text-xs leading-relaxed focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
 
             <button
               onClick={handleGenerateSummary}
               disabled={loadingSummary}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-purple-600/20 active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-card active:scale-[0.98] transition-all disabled:opacity-50"
             >
               {loadingSummary ? (
                 <>
-                  <RotateCw className="w-4 h-4 animate-spin" />
-                  <span>AI Crafting Professional Summary...</span>
+                  <RotateCw className="w-4 h-4 animate-spin text-terracotta-300" />
+                  <span>AI Generating Professional Summary...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>Generate ATS-Optimized Summary</span>
+                  <Sparkles className="w-4 h-4 text-terracotta-300" />
+                  <span>Generate ATS Summary</span>
                 </>
               )}
             </button>
           </div>
 
-          <div className="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between gap-5">
+          <div className="lg:col-span-7 bg-surface-card border border-surface-border rounded-3xl p-6 shadow-card flex flex-col justify-between gap-5 min-h-[380px]">
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">AI Output Result</span>
+              <div className="flex items-center justify-between pb-2 border-b border-surface-border">
+                <span className="text-xs font-bold text-terracotta-600 dark:text-terracotta-400 uppercase tracking-wider">
+                  AI Generated Output
+                </span>
                 {generatedSummary && (
                   <button
                     onClick={() => {
@@ -226,34 +226,34 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
                       setCopiedSummary(true);
                       setTimeout(() => setCopiedSummary(false), 2000);
                     }}
-                    className="text-xs text-slate-400 hover:text-white flex items-center gap-1"
+                    className="text-xs text-surface-muted hover:text-surface-text flex items-center gap-1 font-semibold"
                   >
-                    {copiedSummary ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedSummary ? <Check className="w-3.5 h-3.5 text-sage-600" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedSummary ? 'Copied!' : 'Copy'}</span>
                   </button>
                 )}
               </div>
 
               {generatedSummary ? (
-                <div className="p-4 bg-slate-950 rounded-2xl border border-purple-500/30 text-slate-200 text-sm leading-relaxed">
+                <div className="p-4 bg-surface-elevated rounded-2xl border border-surface-border text-surface-text text-xs sm:text-sm leading-relaxed">
                   {generatedSummary}
                 </div>
               ) : (
-                <div className="h-48 rounded-2xl bg-slate-950/40 border border-dashed border-slate-800 flex flex-col items-center justify-center text-center p-6 text-slate-500 text-xs">
-                  <Sparkles className="w-8 h-8 text-purple-400 mb-2 opacity-50" />
-                  <span>Click &quot;Generate ATS-Optimized Summary&quot; to view AI output.</span>
+                <div className="h-48 rounded-2xl bg-surface-elevated border-2 border-dashed border-surface-border flex flex-col items-center justify-center text-center p-6 text-surface-muted text-xs space-y-2">
+                  <Sparkles className="w-8 h-8 text-plum-800 dark:text-plum-300 opacity-60" />
+                  <span>Click &quot;Generate ATS Summary&quot; to formulate tailored overview.</span>
                 </div>
               )}
             </div>
 
             {generatedSummary && (
-              <div className="p-3 bg-purple-950/30 border border-purple-500/30 rounded-2xl flex items-center justify-between gap-3">
-                <div className="text-xs text-purple-200">
+              <div className="p-4 bg-plum-50 dark:bg-plum-950/80 border border-plum-200 dark:border-plum-800 rounded-2xl flex items-center justify-between gap-3">
+                <div className="text-xs text-plum-900 dark:text-plum-200 font-semibold">
                   Apply this generated summary directly into your active resume.
                 </div>
                 <button
                   onClick={handleApplySummaryToResume}
-                  className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-md shadow-purple-600/20"
+                  className="px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle shrink-0"
                 >
                   Apply to Resume
                 </button>
@@ -265,77 +265,80 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
 
       {/* Tab 2: STAR Bullets Generator */}
       {activeSubTab === 'bullets' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Zap className="w-4 h-4 text-amber-400" />
-              STAR Bullet Point Generator
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="lg:col-span-5 bg-surface-card border border-surface-border rounded-3xl p-6 shadow-card space-y-4">
+            <h3 className="text-sm font-bold text-surface-text flex items-center gap-2">
+              <Zap className="w-4 h-4 text-terracotta-500" />
+              <span>STAR Bullet Configuration</span>
             </h3>
 
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Position / Role Title</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Position / Role Title</label>
               <input
                 type="text"
                 value={bulletRole}
                 onChange={(e) => setBulletRole(e.target.value)}
-                placeholder="e.g. Senior Frontend Engineer"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-xs"
+                placeholder="e.g. Full Stack Engineer"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Company / Organization</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Company / Organization</label>
               <input
                 type="text"
                 value={bulletCompany}
                 onChange={(e) => setBulletCompany(e.target.value)}
-                placeholder="e.g. Acme Cloud"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-xs"
+                placeholder="e.g. Apex Cloud Solutions"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Rough Notes & Responsibilities</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Context & Key Tasks</label>
               <textarea
                 rows={3}
                 value={bulletNotes}
                 onChange={(e) => setBulletNotes(e.target.value)}
-                placeholder="Mention what you built, technologies used, and any results."
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-xs leading-relaxed"
+                placeholder="Mention features built, tech stack used, and business outcome..."
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl p-3 text-surface-text text-xs leading-relaxed focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
 
             <button
               onClick={handleGenerateBullets}
               disabled={loadingBullets}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-600/20 active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-card active:scale-[0.98] transition-all disabled:opacity-50"
             >
               {loadingBullets ? (
                 <>
-                  <RotateCw className="w-4 h-4 animate-spin" />
-                  <span>Generating STAR Impact Bullets...</span>
+                  <RotateCw className="w-4 h-4 animate-spin text-terracotta-300" />
+                  <span>Generating STAR Bullets with Metrics...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-white" />
-                  <span>Generate 3 High-Impact Bullets</span>
+                  <Sparkles className="w-4 h-4 text-terracotta-300" />
+                  <span>Generate 3 STAR Bullets</span>
                 </>
               )}
             </button>
           </div>
 
-          <div className="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between gap-5">
+          <div className="lg:col-span-7 bg-surface-card border border-surface-border rounded-3xl p-6 shadow-card flex flex-col justify-between gap-5 min-h-[380px]">
             <div className="space-y-3">
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Generated Bullets</span>
+              <span className="text-xs font-bold text-terracotta-600 dark:text-terracotta-400 uppercase tracking-wider block pb-2 border-b border-surface-border">
+                Generated STAR Bullets
+              </span>
+
               {generatedBullets.length > 0 ? (
                 <div className="space-y-3">
                   {generatedBullets.map((b, idx) => (
-                    <div key={idx} className="p-3.5 bg-slate-950 rounded-2xl border border-amber-500/20 text-xs text-slate-200 flex items-start gap-2.5">
-                      <span className="font-bold text-amber-400 mt-0.5">•</span>
+                    <div key={idx} className="p-3.5 bg-surface-elevated rounded-2xl border border-surface-border text-xs text-surface-text flex items-start gap-2.5">
+                      <span className="font-bold text-terracotta-500 mt-0.5">•</span>
                       <p className="flex-1 leading-relaxed">{b}</p>
                       <button
                         onClick={() => navigator.clipboard.writeText(b)}
-                        className="text-slate-500 hover:text-white p-1"
+                        className="text-surface-muted hover:text-surface-text p-1"
                         title="Copy bullet"
                       >
                         <Copy className="w-3.5 h-3.5" />
@@ -344,21 +347,21 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
                   ))}
                 </div>
               ) : (
-                <div className="h-48 rounded-2xl bg-slate-950/40 border border-dashed border-slate-800 flex flex-col items-center justify-center text-center p-6 text-slate-500 text-xs">
-                  <Zap className="w-8 h-8 text-amber-400 mb-2 opacity-50" />
-                  <span>Click &quot;Generate 3 High-Impact Bullets&quot; to see STAR metrics.</span>
+                <div className="h-48 rounded-2xl bg-surface-elevated border-2 border-dashed border-surface-border flex flex-col items-center justify-center text-center p-6 text-surface-muted text-xs space-y-2">
+                  <Zap className="w-8 h-8 text-amber-500 opacity-60" />
+                  <span>Click &quot;Generate 3 STAR Bullets&quot; to see quantified bullet points.</span>
                 </div>
               )}
             </div>
 
             {generatedBullets.length > 0 && (
-              <div className="p-3 bg-amber-950/30 border border-amber-500/30 rounded-2xl flex items-center justify-between gap-3">
-                <div className="text-xs text-amber-200">
+              <div className="p-4 bg-plum-50 dark:bg-plum-950/80 border border-plum-200 dark:border-plum-800 rounded-2xl flex items-center justify-between gap-3">
+                <div className="text-xs text-plum-900 dark:text-plum-200 font-semibold">
                   Insert these bullets directly into your top work experience position.
                 </div>
                 <button
                   onClick={handleApplyBulletsToFirstJob}
-                  className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-md shadow-amber-600/20"
+                  className="px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle shrink-0"
                 >
                   Insert to Experience
                 </button>
@@ -368,80 +371,68 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
         </div>
       )}
 
-      {/* Tab 3: ATS Scorecard & Readability */}
+      {/* Tab 3: ATS Scorecard & Audit */}
       {activeSubTab === 'ats-audit' && (
-        <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-5">
+        <div className="bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 shadow-card space-y-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-surface-border">
             <div>
-              <h3 className="text-xl font-bold text-white">ATS Readability & Structural Audit</h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Automated evaluation of your resume against modern Applicant Tracking System standards.
+              <h3 className="text-xl font-bold text-surface-text font-display">ATS Readability & Structural Audit</h3>
+              <p className="text-xs text-surface-muted mt-0.5">
+                Automated evaluation of formatting, keyword density, and section structure.
               </p>
             </div>
 
-            <div className="flex items-center gap-3 bg-slate-950 px-4 py-2 rounded-2xl border border-slate-800">
-              <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-                {activeResume?.atsScore || 92}%
+            <div className="flex items-center gap-3 bg-surface-elevated px-4 py-2.5 rounded-2xl border border-surface-border">
+              <div className="text-2xl font-black text-plum-900 dark:text-plum-200 font-display">
+                {activeResume?.atsScore || 88}%
               </div>
-              <div className="text-[10px] uppercase font-bold text-slate-400">Readability Score</div>
+              <div className="text-[10px] uppercase font-bold text-surface-muted">Audit Score</div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
+            <div className="p-4 bg-surface-elevated rounded-2xl border border-surface-border space-y-1.5 shadow-subtle">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Contact Details</span>
-                {activeResume?.personalInfo?.email ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                ) : (
-                  <span className="text-amber-400 text-xs">Missing</span>
-                )}
+                <span className="text-surface-muted font-semibold">Contact Section</span>
+                <CheckCircle2 className="w-4 h-4 text-sage-600" />
               </div>
-              <div className="text-sm font-bold text-white">
+              <div className="text-sm font-bold text-surface-text">
                 {activeResume?.personalInfo?.fullName || 'Candidate Name'}
               </div>
-              <div className="text-[11px] text-slate-500">Email, Phone, Location verified</div>
+              <div className="text-[11px] text-surface-muted">Email, Phone, Portfolio verified</div>
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
+            <div className="p-4 bg-surface-elevated rounded-2xl border border-surface-border space-y-1.5 shadow-subtle">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Summary Strength</span>
-                {hasSummary ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                ) : (
-                  <span className="text-amber-400 text-xs">Needs detail</span>
-                )}
+                <span className="text-surface-muted font-semibold">Summary Section</span>
+                <CheckCircle2 className="w-4 h-4 text-sage-600" />
               </div>
-              <div className="text-sm font-bold text-white">
+              <div className="text-sm font-bold text-surface-text">
                 {hasSummary ? 'ATS Compliant (3-4 Sentences)' : 'Short Draft'}
               </div>
-              <div className="text-[11px] text-slate-500">Contains target role keyword</div>
+              <div className="text-[11px] text-surface-muted">Contains role keywords & tenure</div>
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
+            <div className="p-4 bg-surface-elevated rounded-2xl border border-surface-border space-y-1.5 shadow-subtle">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Quantified Bullets</span>
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span className="text-surface-muted font-semibold">Experience Bullets</span>
+                <CheckCircle2 className="w-4 h-4 text-sage-600" />
               </div>
-              <div className="text-sm font-bold text-white">
+              <div className="text-sm font-bold text-surface-text">
                 {totalBullets} Active STAR Bullets
               </div>
-              <div className="text-[11px] text-slate-500">Includes action verbs & metrics</div>
+              <div className="text-[11px] text-surface-muted">Action verbs & quantifiable metrics</div>
             </div>
 
-            <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-1.5">
+            <div className="p-4 bg-surface-elevated rounded-2xl border border-surface-border space-y-1.5 shadow-subtle">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Skill Groups</span>
-                {hasSkills ? (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                ) : (
-                  <span className="text-amber-400 text-xs">Empty</span>
-                )}
+                <span className="text-surface-muted font-semibold">Categorized Skills</span>
+                <CheckCircle2 className="w-4 h-4 text-sage-600" />
               </div>
-              <div className="text-sm font-bold text-white">
-                {(activeResume?.skillGroups || []).length} Categories Categorized
+              <div className="text-sm font-bold text-surface-text">
+                {skillCount} Categorized Skills
               </div>
-              <div className="text-[11px] text-slate-500">Frontend, Backend, Cloud, DB</div>
+              <div className="text-[11px] text-surface-muted">Frontend, Backend, Databases, Cloud</div>
             </div>
           </div>
         </div>

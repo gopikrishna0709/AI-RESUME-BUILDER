@@ -70,38 +70,34 @@ export default function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md overflow-y-auto animate-fadeIn">
-      <div className="relative w-full max-w-md max-h-[92vh] flex flex-col bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-8 shadow-2xl overflow-y-auto my-auto">
-        {/* Decorative background glow */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 overflow-y-auto animate-fade-in">
+      <div className="relative w-full max-w-md max-h-[92vh] flex flex-col bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 shadow-modal overflow-y-auto my-auto">
         {/* Close Button */}
         <button
           onClick={closeAuthModal}
           aria-label="Close modal"
-          className="absolute top-4 right-4 p-2.5 text-slate-400 hover:text-white rounded-full bg-slate-800/60 hover:bg-slate-800 transition-colors"
+          className="absolute top-4 right-4 p-2 text-surface-muted hover:text-surface-text rounded-full bg-surface-elevated hover:bg-surface-hover transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
 
-        {/* Header with Icon */}
+        {/* Header with Monogram Badge */}
         <div className="text-center mb-5">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white mb-2.5 shadow-lg shadow-blue-500/25">
-            <Sparkles className="w-6 h-6" />
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-plum-900 text-plum-50 mb-3 shadow-subtle border border-plum-700 font-display font-black text-lg">
+            <span className="text-terracotta-400">C</span>M
           </div>
-          <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            {authModalMode === 'login' ? 'Welcome Back to ResumAI' : 'Create Your Free Account'}
+          <h3 className="text-xl sm:text-2xl font-black text-surface-text tracking-tight font-display">
+            {authModalMode === 'login' ? 'Welcome to CareerMatch' : 'Create Candidate Account'}
           </h3>
-          <p className="text-slate-400 text-xs sm:text-sm mt-1">
+          <p className="text-surface-muted text-xs sm:text-sm mt-1">
             {authModalMode === 'login'
               ? 'Sign in to access your resumes & AI ATS optimizer'
-              : 'Join to build high-impact, ATS-friendly resumes'}
+              : 'Join to build ATS-tailored resumes & scan job matches'}
           </p>
         </div>
 
         {/* Mode Switcher Tabs */}
-        <div className="grid grid-cols-2 p-1 bg-slate-950 rounded-2xl border border-slate-800 mb-4 text-xs font-semibold">
+        <div className="grid grid-cols-2 p-1 bg-surface-elevated rounded-2xl border border-surface-border mb-4 text-xs font-bold">
           <button
             type="button"
             onClick={() => {
@@ -110,8 +106,8 @@ export default function AuthModal() {
             }}
             className={`py-2 rounded-xl transition-all ${
               authModalMode === 'login'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                : 'text-surface-muted hover:text-surface-text'
             }`}
           >
             Sign In
@@ -124,8 +120,8 @@ export default function AuthModal() {
             }}
             className={`py-2 rounded-xl transition-all ${
               authModalMode === 'register'
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                : 'text-surface-muted hover:text-surface-text'
             }`}
           >
             Create Account
@@ -134,39 +130,39 @@ export default function AuthModal() {
 
         {/* Error Alert */}
         {error && (
-          <div className="mb-4 p-3 rounded-2xl bg-red-950/50 border border-red-500/40 text-red-200 text-xs flex items-start gap-2">
-            <span className="text-red-400 font-bold">•</span>
+          <div className="mb-4 p-3 rounded-xl bg-terracotta-50 dark:bg-terracotta-950/60 border border-terracotta-200 dark:border-terracotta-800 text-terracotta-800 dark:text-terracotta-200 text-xs flex items-start gap-2">
+            <span className="text-terracotta-600 font-bold">•</span>
             <span>{error}</span>
           </div>
         )}
 
-        {/* Instant Demo Quick Login Button */}
+        {/* 1-Click Demo Login */}
         <button
           type="button"
           onClick={handleDemo}
           disabled={loading}
-          className="w-full mb-4 py-2.5 sm:py-3 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 active:scale-[0.98] transition-all disabled:opacity-50"
+          className="w-full mb-4 py-2.5 sm:py-3 px-4 rounded-xl bg-sage-50 dark:bg-sage-950/60 hover:bg-sage-100 text-sage-800 dark:text-sage-300 border border-sage-200 dark:border-sage-800 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-all disabled:opacity-50"
         >
-          <Zap className="w-4 h-4 text-amber-300" />
-          <span>⚡ Instant 1-Click Demo Login</span>
+          <Zap className="w-4 h-4 text-amber-500" />
+          <span>⚡ Instant 1-Click Demo Session</span>
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="h-px flex-1 bg-slate-800" />
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-500 font-semibold">
-            Or with your credentials
+          <div className="h-px flex-1 bg-surface-border" />
+          <span className="text-[10px] uppercase tracking-wider text-surface-muted font-bold">
+            Or with credentials
           </span>
-          <div className="h-px flex-1 bg-slate-800" />
+          <div className="h-px flex-1 bg-surface-border" />
         </div>
 
-        {/* Form */}
+        {/* Form Inputs */}
         <form onSubmit={handleSubmit} className="space-y-3.5">
           {authModalMode === 'register' && (
             <>
               <div>
-                <label className="block text-slate-300 text-xs font-medium mb-1">Full Name</label>
+                <label className="block text-surface-muted text-xs font-semibold mb-1">Full Name</label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <User className="w-4 h-4 text-surface-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     required
@@ -174,44 +170,44 @@ export default function AuthModal() {
                     autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-300 text-xs font-medium mb-1">Target Professional Role</label>
+                <label className="block text-surface-muted text-xs font-semibold mb-1">Target Professional Role</label>
                 <input
                   type="text"
                   placeholder="e.g. Senior Full Stack Engineer"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                 />
               </div>
             </>
           )}
 
           <div>
-            <label className="block text-slate-300 text-xs font-medium mb-1">Email Address</label>
+            <label className="block text-surface-muted text-xs font-semibold mb-1">Email Address</label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-surface-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 required
-                placeholder="you@example.com"
+                placeholder="alex@example.com"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-surface-text focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-300 text-xs font-medium mb-1">Password</label>
+            <label className="block text-surface-muted text-xs font-semibold mb-1">Password</label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-surface-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
@@ -219,12 +215,12 @@ export default function AuthModal() {
                 autoComplete={authModalMode === 'login' ? 'current-password' : 'new-password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl pl-10 pr-10 py-2.5 text-xs sm:text-sm text-surface-text focus:outline-none focus:border-plum-600 font-medium"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-muted hover:text-surface-text p-1"
                 aria-label="Toggle password visibility"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -235,44 +231,44 @@ export default function AuthModal() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 sm:py-3 rounded-2xl bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 transition-all mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-xl bg-plum-900 hover:bg-plum-800 active:scale-[0.98] text-white font-bold text-xs sm:text-sm shadow-subtle transition-all mt-2 disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? (
-              <span>Connecting securely...</span>
+              <span>Authenticating securely...</span>
             ) : authModalMode === 'login' ? (
-              <span>Sign In to ResumAI</span>
+              <span>Sign In to CareerMatch</span>
             ) : (
-              <span>Create Free Account</span>
+              <span>Create Candidate Account</span>
             )}
           </button>
         </form>
 
         {/* Footer info */}
-        <div className="mt-4 pt-3 border-t border-slate-800/80 text-center text-xs text-slate-400">
+        <div className="mt-4 pt-3 border-t border-surface-border text-center text-xs text-surface-muted">
           {authModalMode === 'login' ? (
             <p>
-              New to ResumAI?{' '}
+              New to CareerMatch?{' '}
               <button
                 type="button"
                 onClick={() => {
                   setError('');
                   openAuthModal('register');
                 }}
-                className="text-blue-400 font-bold hover:underline"
+                className="text-plum-900 dark:text-plum-300 font-bold hover:underline"
               >
                 Create Account
               </button>
             </p>
           ) : (
             <p>
-              Already have an account?{' '}
+              Already registered?{' '}
               <button
                 type="button"
                 onClick={() => {
                   setError('');
                   openAuthModal('login');
                 }}
-                className="text-blue-400 font-bold hover:underline"
+                className="text-plum-900 dark:text-plum-300 font-bold hover:underline"
               >
                 Sign In
               </button>

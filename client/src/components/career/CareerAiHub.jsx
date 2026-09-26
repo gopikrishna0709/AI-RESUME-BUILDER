@@ -16,6 +16,7 @@ import {
   BookOpen,
   Layers,
   ArrowRight,
+  Check,
 } from 'lucide-react';
 import { aiAPI } from '../../services/api';
 import confetti from 'canvas-confetti';
@@ -112,7 +113,7 @@ export default function CareerAiHub({ activeResume }) {
 
       if (res.data.success && res.data.data) {
         setRoadmap(res.data.data);
-        confetti({ particleCount: 60, spread: 60, origin: { y: 0.6 } });
+        confetti({ particleCount: 65, spread: 60, origin: { y: 0.6 } });
       }
     } catch (err) {
       console.error('Roadmap error:', err);
@@ -123,23 +124,25 @@ export default function CareerAiHub({ activeResume }) {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto pb-8">
       {/* Header */}
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs font-semibold border border-rose-500/30 mb-2">
-          <Bot className="w-3.5 h-3.5 text-rose-400" />
-          <span>Google Gemini Career Copilot</span>
+      <div className="bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 shadow-card transition-colors duration-200">
+        <div className="max-w-3xl space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-plum-50 dark:bg-plum-950/80 text-plum-900 dark:text-plum-200 text-xs font-bold border border-plum-200 dark:border-plum-800">
+            <Bot className="w-3.5 h-3.5 text-terracotta-500" />
+            <span>Google Gemini Career Intelligence</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-surface-text tracking-tight font-display">
+            Career AI & Interview Simulator
+          </h2>
+          <p className="text-surface-muted text-xs sm:text-sm leading-relaxed">
+            Practice realistic hiring manager interview scenarios, receive AI scoring with model answers, and plan your 90-day learning roadmap.
+          </p>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Career AI & Interview Intelligence
-        </h2>
-        <p className="text-slate-400 text-xs sm:text-sm mt-1">
-          Simulate realistic hiring manager interviews, receive AI scoring, and plan your career upskilling roadmap.
-        </p>
       </div>
 
       {/* Sub Tabs */}
-      <div className="flex bg-slate-900/90 border border-slate-800 rounded-2xl p-1.5 gap-1 text-xs max-w-md">
+      <div className="flex bg-surface-elevated border border-surface-border rounded-2xl p-1 gap-1 text-xs max-w-md">
         {[
           { id: 'questions', label: 'Interview Questions', icon: HelpCircle },
           { id: 'mock', label: 'Mock Simulator', icon: MessageSquare },
@@ -151,13 +154,13 @@ export default function CareerAiHub({ activeResume }) {
             <button
               key={tab.id}
               onClick={() => setSubTab(tab.id)}
-              className={`flex items-center justify-center gap-1.5 flex-1 py-2 px-3 rounded-xl font-semibold transition-all ${
+              className={`flex items-center justify-center gap-1.5 flex-1 py-2 px-3 rounded-xl font-bold transition-all ${
                 isActive
-                  ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                  ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                  : 'text-surface-muted hover:text-surface-text'
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-terracotta-300' : 'text-surface-muted'}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -167,19 +170,19 @@ export default function CareerAiHub({ activeResume }) {
       {/* 1. Interview Questions */}
       {subTab === 'questions' && (
         <div className="space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+          <div className="bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-6 shadow-card flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
                 type="text"
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
                 placeholder="Target Role (e.g. Senior Frontend Engineer)"
-                className="bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-white text-xs"
+                className="bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium"
               />
               <select
                 value={experienceLevel}
                 onChange={(e) => setExperienceLevel(e.target.value)}
-                className="bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-white text-xs"
+                className="bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-semibold"
               >
                 <option value="Entry Level">Entry Level</option>
                 <option value="Mid Level">Mid Level</option>
@@ -191,9 +194,9 @@ export default function CareerAiHub({ activeResume }) {
             <button
               onClick={handleFetchQuestions}
               disabled={loadingQuestions}
-              className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-600/20 flex items-center justify-center gap-2 shrink-0 transition-all disabled:opacity-50"
+              className="px-5 py-2.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle flex items-center justify-center gap-2 shrink-0 transition-all disabled:opacity-50"
             >
-              {loadingQuestions ? <RotateCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+              {loadingQuestions ? <RotateCw className="w-3.5 h-3.5 animate-spin text-terracotta-300" /> : <Sparkles className="w-3.5 h-3.5 text-terracotta-300" />}
               <span>Generate Questions</span>
             </button>
           </div>
@@ -205,7 +208,7 @@ export default function CareerAiHub({ activeResume }) {
               return (
                 <div
                   key={q.id}
-                  className="bg-slate-900/80 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 sm:p-5 shadow-xl transition-all space-y-3"
+                  className="bg-surface-card border border-surface-border hover:border-plum-500/40 rounded-2xl p-4 sm:p-5 shadow-subtle transition-all space-y-3"
                 >
                   <div
                     onClick={() => setExpandedQId(isExpanded ? null : q.id)}
@@ -213,38 +216,38 @@ export default function CareerAiHub({ activeResume }) {
                   >
                     <div className="space-y-1">
                       <span
-                        className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                        className={`inline-block px-2.5 py-0.5 rounded-md text-[10px] font-bold ${
                           q.type === 'Technical'
-                            ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                            ? 'bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200'
                             : q.type === 'System Design'
-                            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            ? 'bg-terracotta-50 dark:bg-terracotta-950 text-terracotta-800 dark:text-terracotta-200 border border-terracotta-200'
+                            : 'bg-sage-50 dark:bg-sage-950 text-sage-800 dark:text-sage-200 border border-sage-200'
                         }`}
                       >
                         {q.type}
                       </span>
-                      <h4 className="font-bold text-white text-sm sm:text-base leading-snug">{q.question}</h4>
+                      <h4 className="font-bold text-surface-text text-sm sm:text-base leading-snug">{q.question}</h4>
                     </div>
 
-                    <button className="text-slate-400 hover:text-white p-1">
+                    <button className="text-surface-muted hover:text-surface-text p-1">
                       {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
                   </div>
 
                   {isExpanded && (
-                    <div className="pt-3 border-t border-slate-800 space-y-2.5 text-xs animate-fadeIn">
-                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800/80">
-                        <span className="font-bold text-amber-400 flex items-center gap-1 mb-1">
+                    <div className="pt-3 border-t border-surface-border space-y-2.5 text-xs animate-fade-in">
+                      <div className="p-3.5 bg-surface-elevated rounded-xl border border-surface-border">
+                        <span className="font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1.5 mb-1">
                           <Lightbulb className="w-3.5 h-3.5" /> What Interviewers Look For:
                         </span>
-                        <p className="text-slate-300 leading-relaxed">{q.tips}</p>
+                        <p className="text-surface-text leading-relaxed">{q.tips}</p>
                       </div>
 
-                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800/80">
-                        <span className="font-bold text-blue-400 flex items-center gap-1 mb-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Key Talking Points & Model Response:
+                      <div className="p-3.5 bg-surface-elevated rounded-xl border border-surface-border">
+                        <span className="font-bold text-plum-900 dark:text-plum-200 flex items-center gap-1.5 mb-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-sage-600" /> Ideal Talking Points & Model Response:
                         </span>
-                        <p className="text-slate-300 leading-relaxed">{q.sampleAnswer}</p>
+                        <p className="text-surface-text leading-relaxed">{q.sampleAnswer}</p>
                       </div>
 
                       <div className="flex justify-end pt-1">
@@ -253,10 +256,10 @@ export default function CareerAiHub({ activeResume }) {
                             setSelectedMockQ(q);
                             setSubTab('mock');
                           }}
-                          className="px-3.5 py-1.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 text-rose-300 border border-rose-500/30 font-semibold text-xs flex items-center gap-1.5"
+                          className="px-3.5 py-1.5 rounded-xl bg-plum-50 dark:bg-plum-950 hover:bg-plum-100 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 font-bold text-xs flex items-center gap-1.5"
                         >
                           <span>Practice in Mock Simulator</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-3.5 h-3.5 text-terracotta-500" />
                         </button>
                       </div>
                     </div>
@@ -270,101 +273,102 @@ export default function CareerAiHub({ activeResume }) {
 
       {/* 2. Mock Interview Simulator */}
       {subTab === 'mock' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-rose-400" />
-              Interview Simulator Prompt
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="lg:col-span-5 bg-surface-card border border-surface-border rounded-3xl p-6 shadow-card space-y-4">
+            <h3 className="text-sm font-bold text-surface-text flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-plum-800 dark:text-plum-300" />
+              <span>Interview Prompt & Answer</span>
             </h3>
 
-            {/* Select Question */}
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Select Question to Practice</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Select Question</label>
               <select
                 value={selectedMockQ?.id || ''}
                 onChange={(e) => {
                   const found = questions.find((q) => q.id === Number(e.target.value));
                   if (found) setSelectedMockQ(found);
                 }}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-xs font-medium"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs font-semibold focus:outline-none focus:border-plum-600"
               >
                 {questions.map((q) => (
                   <option key={q.id} value={q.id}>
-                    [{q.type}] {q.question.slice(0, 60)}...
+                    [{q.type}] {q.question.slice(0, 55)}...
                   </option>
                 ))}
               </select>
             </div>
 
             {selectedMockQ && (
-              <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 text-xs text-slate-200">
-                <span className="font-bold text-rose-400 block mb-1">Interviewer Prompt:</span>
-                <p className="leading-relaxed">{selectedMockQ.question}</p>
+              <div className="p-4 bg-surface-elevated rounded-2xl border border-surface-border text-xs text-surface-text space-y-1">
+                <span className="font-bold text-terracotta-600 dark:text-terracotta-400 block text-[11px] uppercase tracking-wider">
+                  Interviewer Question:
+                </span>
+                <p className="leading-relaxed font-semibold">{selectedMockQ.question}</p>
               </div>
             )}
 
             <div>
-              <label className="block text-slate-400 text-xs font-medium mb-1">Your Answer</label>
+              <label className="block text-surface-muted text-xs font-semibold mb-1">Your Structured Response</label>
               <textarea
                 rows={6}
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Type your structured response (Situation, Task, Action, Result) here..."
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-xs leading-relaxed"
+                placeholder="Type your response using STAR framework (Situation, Task, Action, Result)..."
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl p-3 text-surface-text text-xs leading-relaxed focus:outline-none focus:border-plum-600 font-medium"
               />
             </div>
 
             <button
               onClick={handleEvaluateMock}
               disabled={evaluating}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-rose-600/20 active:scale-98 transition-all disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-card active:scale-[0.98] transition-all disabled:opacity-50"
             >
               {evaluating ? (
                 <>
-                  <RotateCw className="w-4 h-4 animate-spin" />
-                  <span>AI Evaluating Your Answer...</span>
+                  <RotateCw className="w-4 h-4 animate-spin text-terracotta-300" />
+                  <span>Evaluating Response with AI...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>Evaluate My Answer with AI</span>
+                  <Sparkles className="w-4 h-4 text-terracotta-300" />
+                  <span>Evaluate My Answer</span>
                 </>
               )}
             </button>
           </div>
 
-          <div className="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Award className="w-4 h-4 text-purple-400" />
-              AI Evaluation & Feedback Score
+          <div className="lg:col-span-7 bg-surface-card border border-surface-border rounded-3xl p-6 shadow-card space-y-4 min-h-[380px]">
+            <h3 className="text-sm font-bold text-surface-text flex items-center gap-2">
+              <Award className="w-4 h-4 text-terracotta-500" />
+              <span>AI Evaluation & Feedback Score</span>
             </h3>
 
             {evaluation ? (
-              <div className="space-y-4 animate-fadeIn text-xs">
+              <div className="space-y-4 animate-fade-in text-xs">
                 {/* Score Header */}
-                <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between">
+                <div className="p-4 bg-surface-elevated rounded-2xl border border-surface-border flex items-center justify-between">
                   <div>
-                    <div className="text-[11px] text-slate-400 font-medium">Verdict</div>
-                    <div className="text-lg font-bold text-white">{evaluation.verdict}</div>
+                    <div className="text-[11px] text-surface-muted font-semibold">Evaluation Verdict</div>
+                    <div className="text-lg font-bold text-surface-text font-display">{evaluation.verdict}</div>
                   </div>
 
                   <div className="text-right">
-                    <div className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-purple-400">
+                    <div className="text-2xl font-black text-plum-900 dark:text-plum-200 font-display">
                       {evaluation.score}/100
                     </div>
-                    <div className="text-[10px] text-slate-400 font-bold uppercase">Signal Score</div>
+                    <div className="text-[10px] text-surface-muted font-bold uppercase">Performance Score</div>
                   </div>
                 </div>
 
                 {/* Strengths */}
                 {evaluation.strengths?.length > 0 && (
-                  <div className="p-3.5 bg-emerald-950/30 border border-emerald-500/30 rounded-2xl space-y-1.5">
-                    <span className="font-bold text-emerald-400 flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Key Strengths:
+                  <div className="p-3.5 bg-sage-50/70 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800 rounded-2xl space-y-1.5">
+                    <span className="font-bold text-sage-800 dark:text-sage-300 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-sage-600" /> Key Strengths:
                     </span>
-                    <ul className="list-disc list-inside space-y-1 text-slate-300">
+                    <ul className="list-disc list-inside space-y-1 text-surface-text">
                       {evaluation.strengths.map((s, idx) => (
-                        <li key={idx}>{s}</li>
+                        <li key={idx} className="leading-relaxed">{s}</li>
                       ))}
                     </ul>
                   </div>
@@ -372,13 +376,13 @@ export default function CareerAiHub({ activeResume }) {
 
                 {/* Improvements */}
                 {evaluation.improvements?.length > 0 && (
-                  <div className="p-3.5 bg-amber-950/30 border border-amber-500/30 rounded-2xl space-y-1.5">
-                    <span className="font-bold text-amber-400 flex items-center gap-1.5">
-                      <AlertTriangle className="w-3.5 h-3.5" /> Areas for Improvement:
+                  <div className="p-3.5 bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl space-y-1.5">
+                    <span className="font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-600" /> Areas for Improvement:
                     </span>
-                    <ul className="list-disc list-inside space-y-1 text-slate-300">
+                    <ul className="list-disc list-inside space-y-1 text-surface-text">
                       {evaluation.improvements.map((imp, idx) => (
-                        <li key={idx}>{imp}</li>
+                        <li key={idx} className="leading-relaxed">{imp}</li>
                       ))}
                     </ul>
                   </div>
@@ -386,18 +390,18 @@ export default function CareerAiHub({ activeResume }) {
 
                 {/* Improved Answer */}
                 {evaluation.improvedAnswer && (
-                  <div className="p-4 bg-slate-950 rounded-2xl border border-purple-500/30 space-y-1.5">
-                    <span className="font-bold text-purple-400 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" /> Exemplary Model Response:
+                  <div className="p-4 bg-surface-elevated rounded-2xl border border-plum-200 dark:border-plum-800 space-y-1.5">
+                    <span className="font-bold text-plum-900 dark:text-plum-200 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-terracotta-500" /> Exemplary Model Response:
                     </span>
-                    <p className="text-slate-300 leading-relaxed">{evaluation.improvedAnswer}</p>
+                    <p className="text-surface-text leading-relaxed">{evaluation.improvedAnswer}</p>
                   </div>
                 )}
               </div>
             ) : (
-              <div className="h-64 rounded-2xl bg-slate-950/40 border border-dashed border-slate-800 flex flex-col items-center justify-center text-center p-6 text-slate-500 text-xs">
-                <MessageSquare className="w-8 h-8 text-rose-400 mb-2 opacity-50" />
-                <span>Select a question, enter your response, and click Evaluate to see feedback.</span>
+              <div className="h-64 rounded-2xl bg-surface-elevated border-2 border-dashed border-surface-border flex flex-col items-center justify-center text-center p-6 text-surface-muted text-xs space-y-2">
+                <MessageSquare className="w-8 h-8 text-plum-800 dark:text-plum-300 opacity-60" />
+                <span>Select a question, type your response, and evaluate to receive AI coaching.</span>
               </div>
             )}
           </div>
@@ -407,19 +411,19 @@ export default function CareerAiHub({ activeResume }) {
       {/* 3. Skill Roadmap */}
       {subTab === 'roadmap' && (
         <div className="space-y-5">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+          <div className="bg-surface-card border border-surface-border rounded-3xl p-6 shadow-card flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
             <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input
                 type="text"
                 value={targetRole}
                 onChange={(e) => setTargetRole(e.target.value)}
                 placeholder="Target Role Goal (e.g. Staff Software Architect)"
-                className="bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-xs"
+                className="bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium"
               />
               <select
                 value={roadmapTimeframe}
                 onChange={(e) => setRoadmapTimeframe(e.target.value)}
-                className="bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-white text-xs"
+                className="bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-semibold"
               >
                 <option value="30-Days Sprint">30-Days Sprint</option>
                 <option value="60-Days Plan">60-Days Comprehensive</option>
@@ -430,33 +434,33 @@ export default function CareerAiHub({ activeResume }) {
             <button
               onClick={handleGenerateRoadmap}
               disabled={loadingRoadmap}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-500 hover:to-purple-500 text-white text-xs font-bold shadow-md shadow-rose-600/20 flex items-center justify-center gap-2 shrink-0 transition-all disabled:opacity-50"
+              className="px-6 py-2.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle flex items-center justify-center gap-2 shrink-0 transition-all disabled:opacity-50"
             >
-              {loadingRoadmap ? <RotateCw className="w-4 h-4 animate-spin" /> : <Compass className="w-4 h-4" />}
-              <span>Generate Skill Roadmap</span>
+              {loadingRoadmap ? <RotateCw className="w-4 h-4 animate-spin text-terracotta-300" /> : <Compass className="w-4 h-4 text-terracotta-300" />}
+              <span>Generate 90-Day Roadmap</span>
             </button>
           </div>
 
           {roadmap && (
-            <div className="space-y-4 animate-fadeIn">
+            <div className="space-y-4 animate-fade-in">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {(roadmap.phases || []).map((phase, pIdx) => (
                   <div
                     key={pIdx}
-                    className="bg-slate-900/80 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-3 flex flex-col justify-between"
+                    className="bg-surface-card border border-surface-border rounded-3xl p-5 shadow-subtle space-y-3 flex flex-col justify-between"
                   >
                     <div className="space-y-2">
-                      <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold border border-purple-500/30">
+                      <span className="px-2.5 py-0.5 rounded-full bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 text-[10px] font-bold border border-plum-200">
                         Phase #{pIdx + 1}
                       </span>
-                      <h4 className="font-bold text-white text-sm">{phase.phase}</h4>
-                      <p className="text-slate-400 text-xs leading-relaxed">{phase.focus}</p>
+                      <h4 className="font-bold text-surface-text text-sm">{phase.phase}</h4>
+                      <p className="text-surface-muted text-xs leading-relaxed">{phase.focus}</p>
 
-                      <div className="pt-2 border-t border-slate-800/80 space-y-1.5">
-                        <span className="text-[11px] font-bold text-blue-400">Milestones:</span>
+                      <div className="pt-2 border-t border-surface-border space-y-1.5">
+                        <span className="text-[11px] font-bold text-plum-900 dark:text-plum-200">Milestones:</span>
                         {(phase.milestones || []).map((m, mIdx) => (
-                          <div key={mIdx} className="flex items-start gap-1.5 text-xs text-slate-300">
-                            <span className="text-blue-400 font-bold">•</span>
+                          <div key={mIdx} className="flex items-start gap-1.5 text-xs text-surface-text">
+                            <span className="text-terracotta-500 font-bold">•</span>
                             <span>{m}</span>
                           </div>
                         ))}
@@ -464,9 +468,9 @@ export default function CareerAiHub({ activeResume }) {
                     </div>
 
                     {phase.recommendedProjects?.length > 0 && (
-                      <div className="pt-2 border-t border-slate-800 text-xs">
-                        <span className="font-bold text-amber-400">Portfolio Project:</span>
-                        <p className="text-slate-300 text-[11px] mt-0.5">{phase.recommendedProjects[0]}</p>
+                      <div className="pt-2 border-t border-surface-border text-xs">
+                        <span className="font-bold text-amber-700 dark:text-amber-300">Portfolio Project:</span>
+                        <p className="text-surface-text text-[11px] mt-0.5 font-medium">{phase.recommendedProjects[0]}</p>
                       </div>
                     )}
                   </div>
@@ -474,13 +478,13 @@ export default function CareerAiHub({ activeResume }) {
               </div>
 
               {roadmap.topCertifications?.length > 0 && (
-                <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <Award className="w-4 h-4 text-amber-400" /> Recommended Certifications:
+                <div className="p-4 bg-surface-card border border-surface-border rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs shadow-subtle">
+                  <span className="font-bold text-surface-text flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-amber-600" /> Recommended Certifications:
                   </span>
                   <div className="flex flex-wrap gap-2">
                     {roadmap.topCertifications.map((cert, cIdx) => (
-                      <span key={cIdx} className="bg-slate-950 text-slate-200 border border-slate-800 px-2.5 py-1 rounded-lg">
+                      <span key={cIdx} className="bg-surface-elevated text-surface-text border border-surface-border px-3 py-1 rounded-lg font-semibold">
                         {cert}
                       </span>
                     ))}

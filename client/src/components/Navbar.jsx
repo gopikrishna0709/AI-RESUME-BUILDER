@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Home,
+  LayoutDashboard,
   FileText,
   Sparkles,
   Target,
@@ -8,51 +8,56 @@ import {
   Bot,
   LogIn,
   LogOut,
-  User,
+  Sun,
+  Moon,
   Zap,
+  Bell,
+  CheckCircle2,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar({ activeTab, onSelectTab }) {
   const { user, logout, openAuthModal, demoLogin, isAuthenticated } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
 
   const NAV_ITEMS = [
-    { id: 'home', label: 'Home', fullLabel: 'Home Hub', icon: Home },
+    { id: 'home', label: 'Dashboard', fullLabel: 'Dashboard', icon: LayoutDashboard },
     { id: 'builder', label: 'Builder', fullLabel: 'Resume Builder', icon: FileText },
-    { id: 'tools', label: 'AI Tools', fullLabel: 'AI Resume Tools', icon: Sparkles },
     { id: 'matcher', label: 'Matcher', fullLabel: 'Job Matcher', icon: Target },
-    { id: 'jobs', label: 'Jobs', fullLabel: 'Job Recommendations', icon: Briefcase },
+    { id: 'tools', label: 'AI Tools', fullLabel: 'AI Resume Studio', icon: Sparkles },
+    { id: 'jobs', label: 'Job Matches', fullLabel: 'Job Matches', icon: Briefcase },
     { id: 'career', label: 'Career AI', fullLabel: 'Career AI', icon: Bot },
   ];
 
   return (
     <>
-      {/* Top Main Navbar */}
-      <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80 px-3 sm:px-6 lg:px-8 py-2.5">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-2 sm:gap-4">
-          {/* Brand Logo */}
+      {/* Top Desktop & Tablet Header */}
+      <header className="sticky top-0 z-40 bg-surface-card border-b border-surface-border px-4 sm:px-6 lg:px-8 py-3 transition-colors duration-200">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
+          {/* Brand Identity */}
           <div
             onClick={() => onSelectTab('home')}
-            className="flex items-center gap-2.5 cursor-pointer select-none shrink-0"
+            className="flex items-center gap-3 cursor-pointer select-none shrink-0 group"
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-plum-900 text-plum-50 flex items-center justify-center font-display font-black text-lg shadow-subtle group-hover:bg-plum-800 transition-colors border border-plum-700">
+              <span className="text-terracotta-400">C</span>M
             </div>
             <div>
-              <div className="flex items-center gap-1 font-display font-black text-base sm:text-lg text-white tracking-tight leading-none">
-                <span>Resum</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+              <div className="flex items-center gap-1.5 font-display font-extrabold text-base sm:text-lg text-surface-text tracking-tight leading-none">
+                <span>CareerMatch</span>
+                <span className="text-terracotta-500 font-bold text-xs uppercase tracking-widest px-1.5 py-0.5 rounded bg-terracotta-50 dark:bg-terracotta-950/60 border border-terracotta-200 dark:border-terracotta-800">
                   AI
                 </span>
               </div>
-              <div className="text-[9px] sm:text-[10px] text-slate-400 font-medium tracking-wide leading-tight hidden xs:block">
-                Builder & Job Intelligence
+              <div className="text-[10px] text-surface-muted font-medium tracking-wide leading-tight hidden xs:block mt-0.5">
+                Resume Builder & Intelligent Job Matcher
               </div>
             </div>
           </div>
 
-          {/* Desktop Navigation Tabs */}
-          <div className="hidden lg:flex items-center bg-slate-900/90 border border-slate-800 rounded-2xl p-1 gap-1 text-xs">
+          {/* Center Navigation Links (Desktop) */}
+          <nav aria-label="Main Navigation" className="hidden lg:flex items-center bg-surface-elevated border border-surface-border rounded-xl p-1 gap-1">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -60,62 +65,77 @@ export default function Navbar({ activeTab, onSelectTab }) {
                 <button
                   key={item.id}
                   onClick={() => onSelectTab(item.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                      ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800 dark:text-plum-50'
+                      : 'text-surface-muted hover:text-surface-text hover:bg-surface-hover'
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-terracotta-400' : 'text-surface-muted'}`} />
                   <span>{item.fullLabel}</span>
                 </button>
               );
             })}
-          </div>
+          </nav>
 
-          {/* User / Auth Actions */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Right Header Actions */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Light / Dark Mode Toggle Switch */}
+            <button
+              onClick={toggleTheme}
+              title={isDark ? 'Switch to Warm Light Theme' : 'Switch to Dark Theme'}
+              className="p-2 rounded-xl bg-surface-elevated hover:bg-surface-hover border border-surface-border text-surface-text transition-all flex items-center justify-center"
+              aria-label="Toggle color theme"
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400 rotate-0 transition-transform duration-300" />
+              ) : (
+                <Moon className="w-4 h-4 text-plum-900 rotate-0 transition-transform duration-300" />
+              )}
+            </button>
+
+            {/* Auth / Profile Area */}
             {isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <div className="hidden xl:flex flex-col items-end text-right">
-                  <span className="text-xs font-bold text-white leading-tight">{user?.name}</span>
-                  <span className="text-[10px] text-blue-400 leading-tight truncate max-w-[140px]">
-                    {user?.targetRole || user?.title}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5 bg-slate-900/90 border border-slate-800 rounded-xl px-2.5 py-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs">
+              <div className="flex items-center gap-2 sm:gap-3">
+                {/* User Status Badge */}
+                <div className="flex items-center gap-2.5 bg-surface-elevated border border-surface-border rounded-xl px-3 py-1.5">
+                  <div className="w-7 h-7 rounded-lg bg-plum-900 text-terracotta-300 flex items-center justify-center font-display font-bold text-xs">
                     {(user?.name || 'U').charAt(0).toUpperCase()}
                   </div>
-                  <span className="text-xs font-bold text-white max-w-[80px] sm:max-w-[110px] truncate">
-                    {user?.name?.split(' ')[0]}
-                  </span>
+                  <div className="hidden sm:flex flex-col text-left">
+                    <span className="text-xs font-bold text-surface-text leading-tight truncate max-w-[130px]">
+                      {user?.name || 'Career Candidate'}
+                    </span>
+                    <span className="text-[10px] text-terracotta-600 dark:text-terracotta-400 leading-tight truncate max-w-[130px] font-medium">
+                      {user?.title || user?.targetRole || 'Professional'}
+                    </span>
+                  </div>
                 </div>
 
+                {/* Sign Out Button */}
                 <button
                   onClick={logout}
                   title="Sign Out"
-                  className="p-2 rounded-xl bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-red-400 hover:border-red-500/40 transition-all"
+                  className="p-2 rounded-xl bg-surface-elevated border border-surface-border text-surface-muted hover:text-terracotta-600 hover:border-terracotta-300 dark:hover:border-terracotta-800 transition-all"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={demoLogin}
-                  className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 text-[11px] sm:text-xs font-bold hover:bg-emerald-600/30 transition-all"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sage-50 dark:bg-sage-950/60 text-sage-700 dark:text-sage-300 border border-sage-200 dark:border-sage-800 text-xs font-bold hover:bg-sage-100 transition-all"
                 >
-                  <Zap className="w-3 h-3 text-amber-300 shrink-0" />
+                  <Zap className="w-3.5 h-3.5 text-amber-500" />
                   <span>Demo</span>
                 </button>
 
                 <button
                   onClick={() => openAuthModal('login')}
-                  className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-[11px] sm:text-xs font-bold shadow-lg shadow-blue-500/20 transition-all"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle active:scale-[0.98] transition-all"
                 >
-                  <LogIn className="w-3.5 h-3.5 shrink-0" />
+                  <LogIn className="w-3.5 h-3.5 text-terracotta-300" />
                   <span>Sign In</span>
                 </button>
               </div>
@@ -124,8 +144,8 @@ export default function Navbar({ activeTab, onSelectTab }) {
         </div>
       </header>
 
-      {/* Mobile / Tablet Horizontal Navigation Scroll */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 px-2 py-1.5 flex items-center justify-around shadow-2xl overflow-x-auto">
+      {/* Mobile Bottom Navigation Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-card border-t border-surface-border px-2 py-1.5 flex items-center justify-around shadow-modal">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -134,11 +154,13 @@ export default function Navbar({ activeTab, onSelectTab }) {
               key={item.id}
               onClick={() => onSelectTab(item.id)}
               className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all shrink-0 ${
-                isActive ? 'text-blue-400 font-bold bg-blue-600/10' : 'text-slate-400 hover:text-slate-200'
+                isActive
+                  ? 'text-plum-900 dark:text-terracotta-400 font-bold bg-plum-50 dark:bg-plum-950/80'
+                  : 'text-surface-muted hover:text-surface-text'
               }`}
             >
               <Icon className="w-4 h-4" />
-              <span className="text-[9.5px] mt-0.5">{item.label}</span>
+              <span className="text-[10px] mt-0.5">{item.label}</span>
             </button>
           );
         })}

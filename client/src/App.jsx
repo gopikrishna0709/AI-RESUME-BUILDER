@@ -10,21 +10,21 @@ import JobBoard from './components/jobs/JobBoard';
 import CareerAiHub from './components/career/CareerAiHub';
 import { resumeAPI } from './services/api';
 import { useAuth } from './context/AuthContext';
-import { Sparkles, Plus, Copy, FileCheck, LayoutTemplate, Eye, Edit3 } from 'lucide-react';
+import { Sparkles, Plus, Copy, CheckCircle2, LayoutTemplate, Eye, Edit3 } from 'lucide-react';
 
 const DEFAULT_RESUME = {
   title: 'Full Stack Engineer Resume',
   targetJobTitle: 'Senior Full Stack Engineer',
   template: 'modern-tech',
   theme: {
-    primaryColor: '#2563eb',
+    primaryColor: '#4A1525',
     fontFamily: 'Inter',
     fontSize: 'normal',
     spacing: 'normal',
   },
   personalInfo: {
     fullName: 'Alex Rivera',
-    headline: 'Senior Full Stack Engineer | React, Node.js, Cloud',
+    headline: 'Senior Full Stack Engineer | React, Node.js, Cloud Architecture',
     email: 'alex.rivera@example.com',
     phone: '+1 (555) 234-5678',
     location: 'San Francisco, CA (Remote)',
@@ -105,7 +105,7 @@ const DEFAULT_RESUME = {
 
 export default function App() {
   const { isAuthenticated, demoLogin } = useAuth();
-  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'builder' | 'tools' | 'matcher' | 'jobs' | 'career'
+  const [activeTab, setActiveTab] = useState('home'); // 'home' | 'builder' | 'matcher' | 'tools' | 'jobs' | 'career'
   const [resumes, setResumes] = useState([]);
   const [activeResume, setActiveResume] = useState(DEFAULT_RESUME);
   const [isSaving, setIsSaving] = useState(false);
@@ -215,7 +215,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16] text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-surface-bg text-surface-text font-sans selection:bg-plum-900 selection:text-plum-50 transition-colors duration-200">
       <Navbar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
@@ -223,15 +223,15 @@ export default function App() {
 
       <AuthModal />
 
-      {/* Floating Toast */}
+      {/* Floating Solid Toast */}
       {toastMessage && (
-        <div className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 bg-slate-900/95 backdrop-blur-xl border border-blue-500/50 text-white px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2 text-xs font-semibold animate-slideUp">
-          <FileCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 bg-surface-card border border-surface-border text-surface-text px-4 py-3 rounded-2xl shadow-lift flex items-center gap-2.5 text-xs font-bold animate-slide-up">
+          <CheckCircle2 className="w-4 h-4 text-sage-600 shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Main Content Area */}
+      {/* Main Content Viewport */}
       <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto pb-24 lg:pb-8">
         {/* Tab 0: Home Hub */}
         {activeTab === 'home' && (
@@ -246,10 +246,10 @@ export default function App() {
         {activeTab === 'builder' && (
           <div className="space-y-4">
             {/* Top Selector Toolbar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-900/60 border border-slate-800/80 p-3 sm:px-4 sm:py-3 rounded-2xl">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-card border border-surface-border p-3 sm:px-4 sm:py-3 rounded-2xl shadow-subtle">
               <div className="flex items-center gap-2.5">
-                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300 shrink-0">
-                  <LayoutTemplate className="w-4 h-4 text-blue-400" />
+                <div className="flex items-center gap-1.5 text-xs font-bold text-surface-text shrink-0">
+                  <LayoutTemplate className="w-4 h-4 text-plum-800 dark:text-plum-300" />
                   <span className="hidden xs:inline">Active Resume:</span>
                 </div>
 
@@ -259,7 +259,7 @@ export default function App() {
                     const found = resumes.find((r) => r._id === e.target.value);
                     if (found) setActiveResume(found);
                   }}
-                  className="flex-1 sm:flex-none bg-slate-950 border border-slate-700 text-xs rounded-xl px-3 py-1.5 text-white font-medium focus:outline-none focus:border-blue-500"
+                  className="flex-1 sm:flex-none bg-surface-elevated border border-surface-border text-xs rounded-xl px-3 py-1.5 text-surface-text font-semibold focus:outline-none focus:border-plum-600"
                 >
                   {resumes.map((r) => (
                     <option key={r._id} value={r._id}>
@@ -271,13 +271,13 @@ export default function App() {
 
               {/* Mobile View Toggle & Action Buttons */}
               <div className="flex items-center justify-between sm:justify-end gap-2">
-                <div className="flex lg:hidden bg-slate-950 p-0.5 rounded-xl border border-slate-800 text-xs font-semibold">
+                <div className="flex lg:hidden bg-surface-elevated p-0.5 rounded-xl border border-surface-border text-xs font-semibold">
                   <button
                     onClick={() => setMobileBuilderView('editor')}
                     className={`flex items-center gap-1 px-3 py-1 rounded-lg transition-all ${
                       mobileBuilderView === 'editor'
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                        : 'text-surface-muted hover:text-surface-text'
                     }`}
                   >
                     <Edit3 className="w-3.5 h-3.5" />
@@ -287,8 +287,8 @@ export default function App() {
                     onClick={() => setMobileBuilderView('preview')}
                     className={`flex items-center gap-1 px-3 py-1 rounded-lg transition-all ${
                       mobileBuilderView === 'preview'
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'text-slate-400 hover:text-white'
+                        ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
+                        : 'text-surface-muted hover:text-surface-text'
                     }`}
                   >
                     <Eye className="w-3.5 h-3.5" />
@@ -299,25 +299,25 @@ export default function App() {
                 <div className="flex items-center gap-1.5 sm:gap-2">
                   <button
                     onClick={handleCreateNewResume}
-                    className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-hover text-surface-text border border-surface-border text-xs font-bold transition-all"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="w-3.5 h-3.5 text-terracotta-500" />
                     <span className="hidden xs:inline">New</span>
                   </button>
 
                   <button
                     onClick={handleDuplicateResume}
-                    className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition-all"
+                    className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-surface-elevated hover:bg-surface-hover text-surface-text border border-surface-border text-xs font-bold transition-all"
                   >
-                    <Copy className="w-3.5 h-3.5" />
+                    <Copy className="w-3.5 h-3.5 text-terracotta-500" />
                     <span className="hidden xs:inline">Clone</span>
                   </button>
 
                   <button
                     onClick={() => setActiveTab('matcher')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-xs font-bold shadow-md shadow-purple-500/20 transition-all"
+                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle transition-all"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <Sparkles className="w-3.5 h-3.5 text-terracotta-300" />
                     <span className="hidden sm:inline">Test ATS Match</span>
                   </button>
                 </div>
@@ -354,19 +354,20 @@ export default function App() {
           </div>
         )}
 
-        {/* Tab 2: AI Resume Tools */}
-        {activeTab === 'tools' && (
-          <AiResumeTools
-            activeResume={activeResume}
-            onUpdateResume={handleResumeUpdated}
-          />
-        )}
-
-        {/* Tab 3: AI Job Matcher */}
+        {/* Tab 2: AI Job Matcher */}
         {activeTab === 'matcher' && (
           <JobMatcherDashboard
             activeResume={activeResume}
             onResumeUpdated={handleResumeUpdated}
+            onNavigateToCareer={() => setActiveTab('career')}
+          />
+        )}
+
+        {/* Tab 3: AI Resume Tools */}
+        {activeTab === 'tools' && (
+          <AiResumeTools
+            activeResume={activeResume}
+            onUpdateResume={handleResumeUpdated}
           />
         )}
 
