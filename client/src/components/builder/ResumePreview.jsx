@@ -240,10 +240,11 @@ export default function ResumePreview({ resume, onUpdateTheme, onSelectTemplate 
       {/* Preview Canvas Container (No horizontal overflow of page) */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-x-auto overflow-y-auto p-2 sm:p-4 lg:p-6 flex justify-center items-start bg-surface-elevated/70"
+        className="flex-1 overflow-x-auto overflow-y-auto p-2 sm:p-4 lg:p-6 flex justify-center items-start bg-surface-elevated/70 resume-preview-scroll-container"
       >
         <div
           ref={previewRef}
+          id="resume-preview-wrapper"
           style={{
             transform: `scale(${zoom})`,
             transformOrigin: 'top center',

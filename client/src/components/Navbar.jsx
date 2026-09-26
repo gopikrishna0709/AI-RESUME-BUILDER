@@ -62,7 +62,7 @@ export default function Navbar({ activeTab, onSelectTab, onLogout }) {
   return (
     <>
       {/* Top Main Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-surface-card border-b border-surface-border px-3.5 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-colors duration-200">
+      <header className="sticky top-0 z-40 bg-surface-card border-b border-surface-border px-3.5 sm:px-6 lg:px-8 py-2.5 sm:py-3 transition-colors duration-200 no-print">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-2 sm:gap-4">
           {/* Brand Identity */}
           <div
@@ -198,7 +198,7 @@ export default function Navbar({ activeTab, onSelectTab, onLogout }) {
 
       {/* Mobile Drawer Overlay Sheet */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end animate-fade-in">
+        <div className="lg:hidden fixed inset-0 z-50 flex flex-col justify-end animate-fade-in no-print">
           {/* Backdrop Blur */}
           <div
             className="fixed inset-0 bg-black/60 transition-opacity"

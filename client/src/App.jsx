@@ -285,6 +285,7 @@ export default function App() {
       <AnimatedCareerBackground
         variant={activeTab}
         isMatching={isAnalyzingMatch}
+        className="no-print"
       />
 
       <Navbar
@@ -297,7 +298,7 @@ export default function App() {
 
       {/* Floating Solid Toast */}
       {toastMessage && (
-        <div className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 bg-surface-card border border-surface-border text-surface-text px-4 py-3 rounded-2xl shadow-lift flex items-center gap-2.5 text-xs font-bold animate-slide-up">
+        <div className="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 bg-surface-card border border-surface-border text-surface-text px-4 py-3 rounded-2xl shadow-lift flex items-center gap-2.5 text-xs font-bold animate-slide-up no-print">
           <CheckCircle2 className="w-4 h-4 text-sage-600 shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -318,7 +319,7 @@ export default function App() {
         {activeTab === 'builder' && (
           <div className="space-y-4">
             {/* Top Selector Toolbar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-card border border-surface-border p-3 sm:px-4 sm:py-3 rounded-2xl shadow-subtle">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface-card border border-surface-border p-3 sm:px-4 sm:py-3 rounded-2xl shadow-subtle no-print">
               <div className="flex items-center gap-2.5">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-surface-text shrink-0">
                   <LayoutTemplate className="w-4 h-4 text-plum-800 dark:text-plum-300" />
@@ -399,7 +400,7 @@ export default function App() {
             {/* Dual Pane on Desktop / Responsive View on Mobile */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               <div
-                className={`lg:col-span-6 h-[750px] sm:h-[820px] ${
+                className={`lg:col-span-6 h-[750px] sm:h-[820px] no-print ${
                   mobileBuilderView === 'preview' ? 'hidden lg:block' : 'block'
                 }`}
               >
