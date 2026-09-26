@@ -67,37 +67,60 @@ export default function ResumePreview({ resume, onUpdateTheme, onSelectTemplate 
 
     try {
       setExporting(true);
-      const canvas = await html2canvas(element, {
-        scale: 2.5,
+
+      // Clone element to an isolated offscreen container to bypass parent CSS transforms/zoom
+      const clone = element.cloneNode(true);
+      clone.style.transform = 'none';
+      clone.style.margin = '0';
+      clone.style.boxShadow = 'none';
+      clone.style.width = '794px'; // Standard 96DPI A4 pixel width
+      clone.style.maxWidth = '794px';
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      clone.style.top = '0';
+      clone.style.backgroundColor = '#ffffff';
+
+      document.body.appendChild(clone);
+
+      const canvas = await html2canvas(clone, {
+        scale: 2, // Crisp 300dpi equivalent resolution
         useCORS: true,
         logging: false,
         backgroundColor: '#ffffff',
+        windowWidth: 794,
       });
 
-      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      // Cleanup cloned node
+      document.body.removeChild(clone);
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
       const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 210;
+      const pageWidth = 210;
       const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgHeight = (canvas.height * pageWidth) / canvas.width;
       let heightLeft = imgHeight;
       let position = 0;
 
-      pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', 0, position, pageWidth, imgHeight, undefined, 'FAST');
       heightLeft -= pageHeight;
 
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
+      // Add additional pages only if there is meaningful remaining content (> 5mm)
+      while (heightLeft > 5) {
+        position -= pageHeight;
         pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        pdf.addImage(imgData, 'JPEG', 0, position, pageWidth, imgHeight, undefined, 'FAST');
         heightLeft -= pageHeight;
       }
 
-      const fileName = `${(resume.personalInfo?.fullName || 'Resume').replace(/\s+/g, '_')}_CareerMatch.pdf`;
+      const rawName = resume.personalInfo?.fullName || 'My';
+      const cleanName = rawName.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+      const fileName = `${cleanName}_Resume.pdf`;
+
       pdf.save(fileName);
 
       // Trigger celebratory confetti
       confetti({
-        particleCount: 80,
+        particleCount: 75,
         spread: 70,
         origin: { y: 0.6 },
       });

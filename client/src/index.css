@@ -191,26 +191,82 @@
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
-/* Print Specific Rules for Crisp PDF Export */
+/* Print Specific Rules for Crisp, Isolated PDF & Print Output */
 @media print {
-  body {
-    background: transparent !important;
-    color: #000000 !important;
-    padding: 0 !important;
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body {
     margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #1e293b !important;
+    width: 100% !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  .no-print {
+
+  /* Hide entire application shell and non-resume elements */
+  header,
+  nav,
+  footer,
+  aside,
+  canvas,
+  .no-print,
+  button,
+  .toast,
+  [role="dialog"] {
     display: none !important;
+    visibility: hidden !important;
   }
-  .print-only {
-    display: block !important;
+
+  body * {
+    visibility: hidden;
   }
+
+  #resume-document,
+  #resume-document * {
+    visibility: visible;
+  }
+
+  #resume-document {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 14mm 16mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    color: #1e293b !important;
+    transform: none !important;
+    page-break-after: auto;
+    page-break-inside: auto;
+  }
+
   .resume-paper {
     box-shadow: none !important;
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
+    padding: 14mm 16mm !important;
+  }
+
+  /* Clean section breaks */
+  .resume-section,
+  .resume-item,
+  section,
+  article {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }
 
