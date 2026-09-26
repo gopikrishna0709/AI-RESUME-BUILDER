@@ -1,12 +1,26 @@
 import axios from 'axios';
 
-const rawApiUrl = import.meta.env.VITE_API_URL || '';
-const baseURL = rawApiUrl
-  ? (rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, '')}/api`)
-  : '/api';
+const getBaseURL = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl) {
+    return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/+$/, '')}/api`;
+  }
+
+  // If in browser and on a deployed domain (like Vercel), default directly to live Render backend
+  if (
+    typeof window !== 'undefined' &&
+    window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1'
+  ) {
+    return 'https://ai-resume-builder-yuli.onrender.com/api';
+  }
+
+  // Local development fallback through Vite proxy
+  return '/api';
+};
 
 const api = axios.create({
-  baseURL,
+  baseURL: getBaseURL(),
 });
 
 api.interceptors.request.use((config) => {
