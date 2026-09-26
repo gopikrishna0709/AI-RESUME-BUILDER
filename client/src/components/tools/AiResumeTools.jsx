@@ -152,7 +152,7 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
       {/* Tab 1: Summary Studio */}
       {activeSubTab === 'summary' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
-          <div className="lg:col-span-5 bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-6 shadow-card space-y-4">
+          <div className="lg:col-span-5 interactive-card rounded-3xl p-5 sm:p-6 shadow-card space-y-4 animate-card-entrance stagger-1">
             <h3 className="text-sm font-bold text-surface-text flex items-center gap-2">
               <FileText className="w-4 h-4 text-plum-800 dark:text-plum-300 shrink-0" />
               <span>Summary Configuration</span>
@@ -214,7 +214,7 @@ export default function AiResumeTools({ activeResume, onUpdateResume }) {
             </button>
           </div>
 
-          <div className="lg:col-span-7 bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-6 shadow-card flex flex-col justify-between gap-4 sm:gap-5 min-h-[340px] sm:min-h-[380px]">
+          <div className="lg:col-span-7 interactive-card rounded-3xl p-5 sm:p-6 shadow-card flex flex-col justify-between gap-4 sm:gap-5 min-h-[340px] sm:min-h-[380px] animate-card-entrance stagger-2">
             <div className="space-y-3">
               <div className="flex items-center justify-between pb-2 border-b border-surface-border">
                 <span className="text-xs font-bold text-terracotta-600 dark:text-terracotta-400 uppercase tracking-wider">
