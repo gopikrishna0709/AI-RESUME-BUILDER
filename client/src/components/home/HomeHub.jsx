@@ -310,6 +310,49 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
           </div>
         </div>
 
+        {/* Subtle Abstract Career Progression Network Flow */}
+        <div className="bg-surface-card border border-surface-border rounded-2xl p-3 sm:p-4 shadow-subtle overflow-x-auto no-scrollbar">
+          <div className="flex items-center justify-between min-w-[560px] gap-2 px-1">
+            {[
+              { id: 'builder', label: '1. Resume', sub: 'ATS Foundation', icon: FileText, color: 'text-plum-900 dark:text-plum-300' },
+              { id: 'tools', label: '2. Skills', sub: 'STAR Enhancer', icon: Sparkles, color: 'text-amber-600 dark:text-amber-400' },
+              { id: 'matcher', label: '3. Job Match', sub: 'NLP Alignment', icon: Target, color: 'text-terracotta-600 dark:text-terracotta-400' },
+              { id: 'career', label: '4. Interview', sub: 'Mock Scoring', icon: Bot, color: 'text-plum-800 dark:text-plum-300' },
+              { id: 'jobs', label: '5. Career Growth', sub: 'Target Placement', icon: TrendingUp, color: 'text-sage-700 dark:text-sage-400' },
+            ].map((step, idx, arr) => {
+              const IconComp = step.icon;
+              return (
+                <React.Fragment key={step.id}>
+                  <button
+                    onClick={() => onSelectTab(step.id)}
+                    className="flex items-center gap-2.5 p-2 rounded-xl hover:bg-surface-elevated transition-all group text-left"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-surface-elevated group-hover:bg-plum-50 dark:group-hover:bg-plum-950/80 border border-surface-border flex items-center justify-center shrink-0 shadow-subtle">
+                      <IconComp className={`w-4 h-4 ${step.color} group-hover:scale-110 transition-transform`} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-surface-text group-hover:text-plum-900 dark:group-hover:text-plum-300 transition-colors truncate">
+                        {step.label}
+                      </div>
+                      <div className="text-[10px] text-surface-muted truncate">
+                        {step.sub}
+                      </div>
+                    </div>
+                  </button>
+
+                  {idx < arr.length - 1 && (
+                    <div className="flex-1 flex items-center justify-center px-1">
+                      <div className="w-full h-px bg-surface-border relative flex items-center justify-center">
+                        <span className="w-1.5 h-1.5 rounded-full bg-terracotta-400/80 animate-ping" />
+                      </div>
+                    </div>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Dashboard Key Metrics Grid (1 Col on mobile, 2 on tablet, 4 on desktop) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Resume Strength Gauge */}

@@ -21,7 +21,12 @@ import {
 import { aiAPI, resumeAPI, jobAPI } from '../../services/api';
 import confetti from 'canvas-confetti';
 
-export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onNavigateToCareer }) {
+export default function JobMatcherDashboard({
+  activeResume,
+  onResumeUpdated,
+  onNavigateToCareer,
+  onMatchingStateChange,
+}) {
   const [resumes, setResumes] = useState([]);
   const [selectedResumeId, setSelectedResumeId] = useState(activeResume?._id || '');
   const [curatedJobs, setCuratedJobs] = useState([]);
@@ -87,6 +92,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
 
     try {
       setLoading(true);
+      onMatchingStateChange?.(true);
       setMatchResult(null);
       setTailoringApplied(false);
 
@@ -114,6 +120,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
       alert('Failed to run AI Match. Please try again.');
     } finally {
       setLoading(false);
+      onMatchingStateChange?.(false);
     }
   };
 
@@ -518,16 +525,76 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 </button>
               </div>
             </div>
+          ) : loading ? (
+            /* Live Match Connection Animation State */
+            <div className="h-full min-h-[380px] sm:min-h-[460px] bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-6 shadow-card">
+              {/* Animated Career Network Bridge Visual */}
+              <div className="relative w-full max-w-sm h-28 flex items-center justify-between px-4">
+                {/* Left: Resume Network Cluster */}
+                <div className="flex flex-col items-center gap-2 z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-plum-100 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border-2 border-plum-500 flex items-center justify-center shadow-subtle animate-pulse">
+                    <FileText className="w-5 h-5 text-plum-900 dark:text-plum-200" />
+                  </div>
+                  <span className="text-[11px] font-bold text-surface-text">Resume Profile</span>
+                </div>
+
+                {/* Center: Animated Connecting Bridge */}
+                <div className="flex-1 px-4 relative flex items-center justify-center">
+                  {/* Glowing Connection Track */}
+                  <div className="w-full h-1 bg-surface-border rounded-full relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-plum-600 via-amber-500 to-terracotta-500 animate-[pulse_1.5s_ease-in-out_infinite]" />
+                  </div>
+
+                  {/* Pulsing Core Intelligence Node */}
+                  <div className="absolute w-8 h-8 rounded-full bg-surface-card border-2 border-amber-500 shadow-lift flex items-center justify-center animate-bounce">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                  </div>
+                </div>
+
+                {/* Right: Target Job Network Cluster */}
+                <div className="flex flex-col items-center gap-2 z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-terracotta-100 dark:bg-terracotta-950 text-terracotta-700 dark:text-terracotta-300 border-2 border-terracotta-500 flex items-center justify-center shadow-subtle animate-pulse">
+                    <Briefcase className="w-5 h-5 text-terracotta-600 dark:text-terracotta-300" />
+                  </div>
+                  <span className="text-[11px] font-bold text-surface-text">Target Job</span>
+                </div>
+              </div>
+
+              {/* Progress Stepper Animation */}
+              <div className="space-y-2 max-w-sm w-full">
+                <h4 className="text-sm font-bold text-surface-text flex items-center justify-center gap-2">
+                  <RotateCw className="w-4 h-4 animate-spin text-terracotta-500" />
+                  <span>Synthesizing Compatibility...</span>
+                </h4>
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-surface-muted">
+                  <div className="bg-surface-elevated p-2 rounded-xl border border-surface-border text-center">
+                    ✓ Skills Extracted
+                  </div>
+                  <div className="bg-surface-elevated p-2 rounded-xl border border-surface-border text-center animate-pulse">
+                    ⚡ ATS Alignment
+                  </div>
+                </div>
+              </div>
+            </div>
           ) : (
             /* Empty State */
-            <div className="h-full min-h-[340px] sm:min-h-[400px] bg-surface-card border-2 border-dashed border-surface-border rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-3">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 flex items-center justify-center shrink-0">
+            <div className="h-full min-h-[340px] sm:min-h-[400px] bg-surface-card border-2 border-dashed border-surface-border rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 flex items-center justify-center shrink-0 shadow-subtle">
                 <Target className="w-6 h-6 sm:w-7 sm:h-7 text-terracotta-500" />
               </div>
-              <h4 className="text-base font-bold text-surface-text">No Active Match Scan</h4>
-              <p className="text-surface-muted text-xs max-w-sm leading-relaxed">
-                Select your resume and choose a target position on the left, then click &quot;Analyze Compatibility & Gaps&quot; to generate your report.
-              </p>
+              <div>
+                <h4 className="text-base font-bold text-surface-text">No Active Match Scan</h4>
+                <p className="text-surface-muted text-xs max-w-sm leading-relaxed mt-1">
+                  Select your active resume on the left and choose a target position to trigger the AI Match Connection.
+                </p>
+              </div>
+
+              {/* Visual Abstract Network Preview */}
+              <div className="flex items-center gap-3 pt-2 text-xs font-semibold text-surface-muted">
+                <span className="flex items-center gap-1.5"><FileText className="w-3.5 h-3.5 text-plum-700 dark:text-plum-300" /> Resume Network</span>
+                <span className="text-terracotta-500 font-bold">──●──</span>
+                <span className="flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5 text-terracotta-600 dark:text-terracotta-400" /> Job Network</span>
+              </div>
             </div>
           )}
         </div>

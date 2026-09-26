@@ -11,6 +11,7 @@ import CareerAiHub from './components/career/CareerAiHub';
 import { resumeAPI } from './services/api';
 import { useAuth } from './context/AuthContext';
 import { Sparkles, Plus, Copy, CheckCircle2, LayoutTemplate, Eye, Edit3 } from 'lucide-react';
+import AnimatedCareerBackground from './components/background/AnimatedCareerBackground';
 
 const DEFAULT_RESUME = {
   title: 'Full Stack Engineer Resume',
@@ -111,6 +112,7 @@ export default function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [mobileBuilderView, setMobileBuilderView] = useState('editor'); // 'editor' | 'preview'
+  const [isAnalyzingMatch, setIsAnalyzingMatch] = useState(false);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -215,7 +217,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface-bg text-surface-text font-sans selection:bg-plum-900 selection:text-plum-50 transition-colors duration-200">
+    <div className="min-h-screen flex flex-col bg-surface-bg text-surface-text font-sans selection:bg-plum-900 selection:text-plum-50 transition-colors duration-200 relative">
+      {/* Signature Animated Career Network Background */}
+      <AnimatedCareerBackground
+        variant={activeTab}
+        isMatching={isAnalyzingMatch}
+      />
+
       <Navbar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
@@ -232,7 +240,7 @@ export default function App() {
       )}
 
       {/* Main Content Viewport */}
-      <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto pb-24 lg:pb-8">
+      <main className="relative z-10 flex-1 p-3 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto pb-24 lg:pb-8">
         {/* Tab 0: Home Hub */}
         {activeTab === 'home' && (
           <HomeHub
@@ -360,6 +368,7 @@ export default function App() {
             activeResume={activeResume}
             onResumeUpdated={handleResumeUpdated}
             onNavigateToCareer={() => setActiveTab('career')}
+            onMatchingStateChange={setIsAnalyzingMatch}
           />
         )}
 
