@@ -142,12 +142,12 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-6">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto pb-6">
       {/* Header Banner */}
-      <div className="bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 shadow-card transition-colors duration-200">
+      <div className="bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-8 shadow-card transition-colors duration-200">
         <div className="max-w-3xl space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-plum-50 dark:bg-plum-950/80 text-plum-900 dark:text-plum-200 text-xs font-bold border border-plum-200 dark:border-plum-800">
-            <Target className="w-3.5 h-3.5 text-terracotta-500" />
+            <Target className="w-3.5 h-3.5 text-terracotta-500 shrink-0" />
             <span>Job Description Compatibility & ATS Scanner</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black text-surface-text tracking-tight font-display">
@@ -160,14 +160,14 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
       </div>
 
       {/* Main Configuration & Results Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
         {/* Left Column: Input Selection */}
-        <div className="lg:col-span-5 space-y-5">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-5">
           {/* Step 1: Select Candidate Resume */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-5 shadow-subtle space-y-3">
+          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-surface-text uppercase tracking-wider flex items-center gap-2">
-                <FileText className="w-4 h-4 text-plum-800 dark:text-plum-300" />
+                <FileText className="w-4 h-4 text-plum-800 dark:text-plum-300 shrink-0" />
                 <span>1. Select Resume</span>
               </label>
               <span className="text-[11px] text-surface-muted font-medium">{resumes.length} available</span>
@@ -176,7 +176,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
             <select
               value={selectedResumeId}
               onChange={(e) => setSelectedResumeId(e.target.value)}
-              className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs font-semibold focus:outline-none focus:border-plum-600"
+              className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs font-semibold focus:outline-none focus:border-plum-600 min-h-[44px]"
             >
               {resumes.map((r) => (
                 <option key={r._id} value={r._id}>
@@ -187,17 +187,17 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
           </div>
 
           {/* Step 2: Job Description Setup */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-5 shadow-subtle space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <label className="text-xs font-bold text-surface-text uppercase tracking-wider flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-terracotta-500" />
+                <Briefcase className="w-4 h-4 text-terracotta-500 shrink-0" />
                 <span>2. Target Position</span>
               </label>
 
-              <div className="flex bg-surface-elevated rounded-xl p-0.5 border border-surface-border text-[11px]">
+              <div className="flex bg-surface-elevated rounded-xl p-0.5 border border-surface-border text-[11px] self-start sm:self-auto">
                 <button
                   onClick={() => setInputMode('curated')}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-bold transition-all touch-target ${
                     inputMode === 'curated'
                       ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
                       : 'text-surface-muted hover:text-surface-text'
@@ -207,7 +207,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 </button>
                 <button
                   onClick={() => setInputMode('custom')}
-                  className={`px-3 py-1 rounded-lg font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-bold transition-all touch-target ${
                     inputMode === 'custom'
                       ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
                       : 'text-surface-muted hover:text-surface-text'
@@ -223,7 +223,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 <select
                   value={selectedJobId}
                   onChange={(e) => setSelectedJobId(e.target.value)}
-                  className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs font-semibold focus:outline-none focus:border-plum-600"
+                  className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3.5 py-2.5 text-surface-text text-xs font-semibold focus:outline-none focus:border-plum-600 min-h-[44px]"
                 >
                   {curatedJobs.map((j) => (
                     <option key={j._id} value={j._id}>
@@ -239,9 +239,9 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                       const cur = curatedJobs.find((j) => j._id === selectedJobId);
                       return (
                         <>
-                          <div className="flex items-center justify-between font-bold text-surface-text">
-                            <span>{cur.company} • {cur.title}</span>
-                            <span className="text-sage-700 dark:text-sage-400 font-semibold">{cur.location}</span>
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between font-bold text-surface-text gap-1">
+                            <span className="truncate">{cur.company} • {cur.title}</span>
+                            <span className="text-sage-700 dark:text-sage-400 font-semibold text-[11px] shrink-0">{cur.location}</span>
                           </div>
                           <p className="text-surface-muted text-[11px] line-clamp-2 leading-relaxed">{cur.description}</p>
                           <div className="flex flex-wrap gap-1 pt-1">
@@ -259,20 +259,20 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <input
                     type="text"
                     placeholder="Job Title (e.g. Lead React Dev)"
                     value={customTitle}
                     onChange={(e) => setCustomTitle(e.target.value)}
-                    className="bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium"
+                    className="bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium min-h-[42px]"
                   />
                   <input
                     type="text"
                     placeholder="Company (e.g. Google)"
                     value={customCompany}
                     onChange={(e) => setCustomCompany(e.target.value)}
-                    className="bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium"
+                    className="bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text text-xs focus:outline-none focus:border-plum-600 font-medium min-h-[42px]"
                   />
                 </div>
                 <textarea
@@ -289,7 +289,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
             <button
               onClick={handleRunMatch}
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-card active:scale-[0.98] transition-all disabled:opacity-50"
+              className="w-full py-3 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-card active:scale-[0.98] transition-all disabled:opacity-50 min-h-[46px]"
             >
               {loading ? (
                 <>
@@ -309,43 +309,43 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
         {/* Right Column: Match Report & Skill Gap Analysis */}
         <div className="lg:col-span-7">
           {matchResult ? (
-            <div className="bg-surface-card border border-surface-border rounded-3xl p-6 sm:p-8 shadow-card space-y-6">
+            <div className="bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-7 shadow-card space-y-5 sm:space-y-6">
               {/* Header Report Card */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-5 border-b border-surface-border">
-                <div>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 sm:pb-5 border-b border-surface-border">
+                <div className="min-w-0">
                   <div className="text-xs font-bold text-terracotta-600 dark:text-terracotta-400 uppercase tracking-wider">
                     Compatibility Verdict
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-black text-surface-text mt-0.5 font-display">
-                    {matchResult.jobTitle} {matchResult.company && <span className="text-surface-muted font-normal text-base">at {matchResult.company}</span>}
+                  <h3 className="text-lg sm:text-2xl font-black text-surface-text mt-0.5 font-display truncate">
+                    {matchResult.jobTitle} {matchResult.company && <span className="text-surface-muted font-normal text-sm sm:text-base">at {matchResult.company}</span>}
                   </h3>
                 </div>
 
                 {/* Match Score Radial Display */}
-                <div className="flex items-center gap-4 bg-surface-elevated px-4 py-3 rounded-2xl border border-surface-border">
+                <div className="flex items-center gap-3.5 bg-surface-elevated px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl border border-surface-border shrink-0">
                   <div className="text-center">
-                    <div className="text-2xl font-black text-plum-900 dark:text-plum-200 font-display">
+                    <div className="text-xl sm:text-2xl font-black text-plum-900 dark:text-plum-200 font-display">
                       {matchResult.overallMatchScore}%
                     </div>
-                    <div className="text-[10px] uppercase font-bold text-surface-muted">Match Score</div>
+                    <div className="text-[9.5px] sm:text-[10px] uppercase font-bold text-surface-muted">Match Score</div>
                   </div>
 
-                  <div className="h-8 w-px bg-surface-border" />
+                  <div className="h-7 sm:h-8 w-px bg-surface-border" />
 
                   <div className="text-center">
-                    <div className="text-2xl font-black text-sage-600 dark:text-sage-400 font-display">
+                    <div className="text-xl sm:text-2xl font-black text-sage-600 dark:text-sage-400 font-display">
                       {matchResult.atsPassedRate}%
                     </div>
-                    <div className="text-[10px] uppercase font-bold text-surface-muted">ATS Pass Rate</div>
+                    <div className="text-[9.5px] sm:text-[10px] uppercase font-bold text-surface-muted">ATS Pass Rate</div>
                   </div>
                 </div>
               </div>
 
-              {/* Breakdown Indicators (Non-generic, distinct visual bars) */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div className="bg-surface-elevated p-3 rounded-xl border border-surface-border">
-                  <div className="text-[11px] text-surface-muted mb-1 font-medium">Skills Match</div>
-                  <div className="text-lg font-bold text-surface-text">{matchResult.skillsMatchScore}%</div>
+              {/* Breakdown Indicators */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+                <div className="bg-surface-elevated p-2.5 sm:p-3 rounded-xl border border-surface-border">
+                  <div className="text-[10.5px] sm:text-[11px] text-surface-muted mb-1 font-medium truncate">Skills Match</div>
+                  <div className="text-base sm:text-lg font-bold text-surface-text">{matchResult.skillsMatchScore}%</div>
                   <div className="w-full bg-surface-border h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div
                       className="bg-plum-900 dark:bg-plum-500 h-full rounded-full"
@@ -354,9 +354,9 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                   </div>
                 </div>
 
-                <div className="bg-surface-elevated p-3 rounded-xl border border-surface-border">
-                  <div className="text-[11px] text-surface-muted mb-1 font-medium">Experience Fit</div>
-                  <div className="text-lg font-bold text-surface-text">{matchResult.experienceMatchScore}%</div>
+                <div className="bg-surface-elevated p-2.5 sm:p-3 rounded-xl border border-surface-border">
+                  <div className="text-[10.5px] sm:text-[11px] text-surface-muted mb-1 font-medium truncate">Experience Fit</div>
+                  <div className="text-base sm:text-lg font-bold text-surface-text">{matchResult.experienceMatchScore}%</div>
                   <div className="w-full bg-surface-border h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div
                       className="bg-amber-500 h-full rounded-full"
@@ -365,9 +365,9 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                   </div>
                 </div>
 
-                <div className="bg-surface-elevated p-3 rounded-xl border border-surface-border">
-                  <div className="text-[11px] text-surface-muted mb-1 font-medium">Education Fit</div>
-                  <div className="text-lg font-bold text-surface-text">{matchResult.educationMatchScore}%</div>
+                <div className="bg-surface-elevated p-2.5 sm:p-3 rounded-xl border border-surface-border">
+                  <div className="text-[10.5px] sm:text-[11px] text-surface-muted mb-1 font-medium truncate">Education Fit</div>
+                  <div className="text-base sm:text-lg font-bold text-surface-text">{matchResult.educationMatchScore}%</div>
                   <div className="w-full bg-surface-border h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div
                       className="bg-sage-600 h-full rounded-full"
@@ -376,9 +376,9 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                   </div>
                 </div>
 
-                <div className="bg-surface-elevated p-3 rounded-xl border border-surface-border">
-                  <div className="text-[11px] text-surface-muted mb-1 font-medium">Keyword Match</div>
-                  <div className="text-lg font-bold text-surface-text">{Math.round((matchResult.overallMatchScore + matchResult.skillsMatchScore) / 2)}%</div>
+                <div className="bg-surface-elevated p-2.5 sm:p-3 rounded-xl border border-surface-border">
+                  <div className="text-[10.5px] sm:text-[11px] text-surface-muted mb-1 font-medium truncate">Keywords</div>
+                  <div className="text-base sm:text-lg font-bold text-surface-text">{Math.round((matchResult.overallMatchScore + matchResult.skillsMatchScore) / 2)}%</div>
                   <div className="w-full bg-surface-border h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div
                       className="bg-terracotta-500 h-full rounded-full"
@@ -388,18 +388,18 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 </div>
               </div>
 
-              {/* 10. SKILL GAP ANALYSIS (Solid Chips: Strong Matches vs Skills to Improve) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Skill Gap Analysis (Strong Matches vs Skills to Improve) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 {/* Strong Matches */}
-                <div className="bg-sage-50/70 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800 rounded-2xl p-4 space-y-2.5">
+                <div className="bg-sage-50/70 dark:bg-sage-950/40 border border-sage-200 dark:border-sage-800 rounded-2xl p-3.5 sm:p-4 space-y-2.5">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-sage-800 dark:text-sage-300 uppercase tracking-wider">
-                    <CheckCircle2 className="w-4 h-4 text-sage-600" />
+                    <CheckCircle2 className="w-4 h-4 text-sage-600 shrink-0" />
                     <span>Your Strong Matches ({matchResult.matchingSkills?.length || 0})</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {(matchResult.matchingSkills || []).map((sk, idx) => (
                       <span key={idx} className="bg-sage-100 dark:bg-sage-900/60 text-sage-900 dark:text-sage-200 border border-sage-300 dark:border-sage-700 px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1">
-                        <Check className="w-3 h-3 text-sage-700 dark:text-sage-300" />
+                        <Check className="w-3 h-3 text-sage-700 dark:text-sage-300 shrink-0" />
                         <span>{sk}</span>
                       </span>
                     ))}
@@ -410,17 +410,17 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 </div>
 
                 {/* Skills to Improve */}
-                <div className="bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 space-y-2.5">
+                <div className="bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl p-3.5 sm:p-4 space-y-2.5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">
-                      <AlertTriangle className="w-4 h-4 text-amber-600" />
+                      <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                       <span>Skills to Improve ({matchResult.missingSkills?.length || 0})</span>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {(matchResult.missingSkills || []).map((sk, idx) => (
                       <span key={idx} className="bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700 px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1">
-                        <Plus className="w-3 h-3 text-amber-700 dark:text-amber-300" />
+                        <Plus className="w-3 h-3 text-amber-700 dark:text-amber-300 shrink-0" />
                         <span>{sk}</span>
                       </span>
                     ))}
@@ -441,7 +441,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                     onClick={() => {
                       if (onNavigateToCareer) onNavigateToCareer();
                     }}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-plum-900 hover:bg-plum-800 text-white font-bold shrink-0 transition-all shadow-subtle"
+                    className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-plum-900 hover:bg-plum-800 text-white font-bold shrink-0 transition-all shadow-subtle min-h-[38px]"
                   >
                     <Compass className="w-3.5 h-3.5 text-terracotta-300" />
                     <span>Generate Learning Roadmap</span>
@@ -452,7 +452,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
               {/* Strengths & Tailoring Action Plan */}
               <div className="space-y-3 text-xs">
                 {matchResult.keyStrengths && matchResult.keyStrengths.length > 0 && (
-                  <div className="bg-surface-elevated p-4 rounded-xl border border-surface-border">
+                  <div className="bg-surface-elevated p-3.5 sm:p-4 rounded-xl border border-surface-border">
                     <span className="font-bold text-plum-900 dark:text-plum-200 block mb-1.5 text-xs">
                       Candidate Strengths Highlighted:
                     </span>
@@ -465,7 +465,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 )}
 
                 {matchResult.tailoringRecommendations && matchResult.tailoringRecommendations.length > 0 && (
-                  <div className="bg-surface-elevated p-4 rounded-xl border border-surface-border">
+                  <div className="bg-surface-elevated p-3.5 sm:p-4 rounded-xl border border-surface-border">
                     <span className="font-bold text-terracotta-600 dark:text-terracotta-400 block mb-1.5 text-xs">
                       Resume Tailoring Recommendations:
                     </span>
@@ -478,11 +478,11 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 )}
               </div>
 
-              {/* 12. 1-Click AI Resume Optimization */}
+              {/* 1-Click AI Resume Optimization */}
               <div className="p-4 rounded-2xl bg-plum-50 dark:bg-plum-950/80 border border-plum-200 dark:border-plum-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                 <div>
                   <div className="font-bold text-plum-900 dark:text-plum-200 text-xs flex items-center gap-1.5">
-                    <Zap className="w-4 h-4 text-terracotta-500" />
+                    <Zap className="w-4 h-4 text-terracotta-500 shrink-0" />
                     <span>1-Click AI Resume Optimization</span>
                   </div>
                   <div className="text-[11px] text-surface-muted mt-0.5">
@@ -493,7 +493,7 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
                 <button
                   onClick={handleApplyTailoring}
                   disabled={tailoringApplied || applyingTailor}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-subtle shrink-0 flex items-center gap-1.5 ${
+                  className={`w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-subtle shrink-0 flex items-center justify-center gap-1.5 min-h-[40px] ${
                     tailoringApplied
                       ? 'bg-sage-600 text-white cursor-default'
                       : 'bg-plum-900 hover:bg-plum-800 text-white'
@@ -520,9 +520,9 @@ export default function JobMatcherDashboard({ activeResume, onResumeUpdated, onN
             </div>
           ) : (
             /* Empty State */
-            <div className="h-full min-h-[400px] bg-surface-card border-2 border-dashed border-surface-border rounded-3xl p-8 flex flex-col items-center justify-center text-center space-y-3">
-              <div className="w-14 h-14 rounded-2xl bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 flex items-center justify-center">
-                <Target className="w-7 h-7 text-terracotta-500" />
+            <div className="h-full min-h-[340px] sm:min-h-[400px] bg-surface-card border-2 border-dashed border-surface-border rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center text-center space-y-3">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 flex items-center justify-center shrink-0">
+                <Target className="w-6 h-6 sm:w-7 sm:h-7 text-terracotta-500" />
               </div>
               <h4 className="text-base font-bold text-surface-text">No Active Match Scan</h4>
               <p className="text-surface-muted text-xs max-w-sm leading-relaxed">

@@ -257,33 +257,33 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
   return (
     <div className="flex flex-col h-full bg-surface-card rounded-2xl border border-surface-border shadow-card overflow-hidden transition-colors duration-200">
       {/* Top Header & Save Toolbar */}
-      <div className="p-4 bg-surface-elevated border-b border-surface-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex-1">
+      <div className="p-3.5 sm:p-4 bg-surface-elevated border-b border-surface-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex-1 min-w-0">
           <input
             type="text"
             value={resume.title || ''}
             onChange={(e) => onChange({ ...resume, title: e.target.value })}
-            className="bg-transparent font-bold text-surface-text text-base focus:outline-none focus:ring-1 focus:ring-plum-500 rounded px-1.5 py-0.5 border border-transparent hover:border-surface-border w-full max-w-sm"
+            className="bg-transparent font-bold text-surface-text text-sm sm:text-base focus:outline-none focus:ring-1 focus:ring-plum-500 rounded px-1.5 py-0.5 border border-transparent hover:border-surface-border w-full truncate"
             placeholder="Resume Document Title"
           />
-          <div className="text-[11px] text-surface-muted px-1.5 mt-0.5">
-            Target Role:{' '}
+          <div className="text-[11px] text-surface-muted px-1.5 mt-0.5 flex items-center gap-1 truncate">
+            <span className="shrink-0">Target:</span>
             <input
               type="text"
               value={resume.targetJobTitle || ''}
               onChange={(e) => onChange({ ...resume, targetJobTitle: e.target.value })}
-              className="bg-transparent text-terracotta-600 dark:text-terracotta-400 font-semibold focus:outline-none focus:underline"
+              className="bg-transparent text-terracotta-600 dark:text-terracotta-400 font-semibold focus:outline-none focus:underline truncate flex-1"
               placeholder="e.g. Senior Full Stack Engineer"
             />
           </div>
         </div>
 
-        <div className="flex items-center gap-3 justify-between sm:justify-end">
-          {/* Progress Indicator */}
-          <div className="flex items-center gap-2 bg-surface-card px-3 py-1.5 rounded-xl border border-surface-border text-xs">
-            <span className="text-surface-muted font-medium">Completion:</span>
+        <div className="flex items-center gap-2.5 justify-between sm:justify-end shrink-0">
+          {/* Progress Completion Indicator */}
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-surface-card px-2.5 sm:px-3 py-1.5 rounded-xl border border-surface-border text-xs">
+            <span className="text-surface-muted font-medium text-[11px] hidden xs:inline">Completion:</span>
             <span className="font-bold text-plum-900 dark:text-plum-200">{completionRate}%</span>
-            <div className="w-12 bg-surface-elevated h-1.5 rounded-full overflow-hidden">
+            <div className="w-10 sm:w-12 bg-surface-elevated h-1.5 rounded-full overflow-hidden">
               <div
                 className="bg-terracotta-500 h-full rounded-full transition-all duration-300"
                 style={{ width: `${completionRate}%` }}
@@ -294,10 +294,10 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
           <button
             onClick={onSave}
             disabled={isSaving}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs shadow-subtle active:scale-[0.98] transition-all disabled:opacity-50"
+            className="flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs shadow-subtle active:scale-[0.98] transition-all disabled:opacity-50 min-h-[38px]"
           >
             {isSaving ? <RotateCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5 text-terracotta-300" />}
-            <span>{isSaving ? 'Saving...' : 'Save Resume'}</span>
+            <span>{isSaving ? 'Saving...' : 'Save'}</span>
           </button>
         </div>
       </div>
@@ -312,9 +312,9 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
 
       {/* Workspace Body: Left Section Navigator + Center Form Content */}
       <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-        {/* Left Section Sidebar */}
-        <div className="w-full md:w-56 bg-surface-elevated border-b md:border-b-0 md:border-r border-surface-border p-2 flex md:flex-col gap-1 overflow-x-auto md:overflow-y-auto shrink-0">
-          <div className="hidden md:block px-3 py-2 text-[10px] font-bold text-surface-muted uppercase tracking-wider">
+        {/* Section Navigation Tabs (Horizontal Scroll on Mobile, Sidebar on Tablet/Desktop) */}
+        <div className="w-full md:w-52 lg:w-56 bg-surface-elevated border-b md:border-b-0 md:border-r border-surface-border p-1.5 sm:p-2 flex md:flex-col gap-1 overflow-x-auto md:overflow-y-auto shrink-0 scrollbar-none">
+          <div className="hidden md:block px-3 py-1.5 text-[10px] font-bold text-surface-muted uppercase tracking-wider">
             Resume Sections
           </div>
           {TABS.map((tab) => {
@@ -324,7 +324,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap md:whitespace-normal text-left ${
+                className={`flex items-center gap-2 sm:gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap md:whitespace-normal text-left min-h-[40px] ${
                   isActive
                     ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800'
                     : 'text-surface-muted hover:text-surface-text hover:bg-surface-card'
@@ -338,26 +338,26 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
           })}
         </div>
 
-        {/* Center Editing Form Container */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 text-xs text-surface-text bg-surface-card">
+        {/* Form Container */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 text-xs text-surface-text bg-surface-card">
           {/* Tab 1: Personal Information */}
           {activeTab === 'personal' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-surface-border">
                 <h3 className="font-bold text-sm text-surface-text flex items-center gap-2">
                   <User className="w-4 h-4 text-plum-800 dark:text-plum-300" />
-                  Personal & Contact Information
+                  Personal Details
                 </h3>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                 <div>
                   <label className="block text-surface-muted font-medium mb-1">Full Name</label>
                   <input
                     type="text"
                     value={resume.personalInfo?.fullName || ''}
                     onChange={(e) => updatePersonalInfo('fullName', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="e.g. Alex Rivera"
                   />
                 </div>
@@ -368,7 +368,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     type="text"
                     value={resume.personalInfo?.headline || ''}
                     onChange={(e) => updatePersonalInfo('headline', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="e.g. Senior Full Stack Engineer"
                   />
                 </div>
@@ -379,7 +379,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     type="email"
                     value={resume.personalInfo?.email || ''}
                     onChange={(e) => updatePersonalInfo('email', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="alex@example.com"
                   />
                 </div>
@@ -390,7 +390,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     type="text"
                     value={resume.personalInfo?.phone || ''}
                     onChange={(e) => updatePersonalInfo('phone', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="+1 (555) 000-0000"
                   />
                 </div>
@@ -401,18 +401,18 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     type="text"
                     value={resume.personalInfo?.location || ''}
                     onChange={(e) => updatePersonalInfo('location', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="San Francisco, CA / Remote"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-surface-muted font-medium mb-1">Portfolio / Personal Website</label>
+                  <label className="block text-surface-muted font-medium mb-1">Portfolio Website</label>
                   <input
                     type="url"
                     value={resume.personalInfo?.portfolioUrl || ''}
                     onChange={(e) => updatePersonalInfo('portfolioUrl', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="https://alexrivera.dev"
                   />
                 </div>
@@ -423,7 +423,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     type="url"
                     value={resume.personalInfo?.linkedinUrl || ''}
                     onChange={(e) => updatePersonalInfo('linkedinUrl', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="https://linkedin.com/in/username"
                   />
                 </div>
@@ -434,7 +434,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     type="url"
                     value={resume.personalInfo?.githubUrl || ''}
                     onChange={(e) => updatePersonalInfo('githubUrl', e.target.value)}
-                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600"
+                    className="w-full bg-surface-elevated border border-surface-border rounded-xl px-3 py-2 text-surface-text focus:outline-none focus:border-plum-600 font-medium"
                     placeholder="https://github.com/username"
                   />
                 </div>
@@ -445,7 +445,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
           {/* Tab 2: Professional Summary */}
           {activeTab === 'summary' && (
             <div className="space-y-4">
-              <div className="flex flex-wrap justify-between items-center gap-2 pb-2 border-b border-surface-border">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-2 border-b border-surface-border">
                 <h3 className="font-bold text-sm text-surface-text flex items-center gap-2">
                   <FileText className="w-4 h-4 text-plum-800 dark:text-plum-300" />
                   Professional Summary
@@ -454,9 +454,9 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                 <button
                   onClick={handleAiPolishSummary}
                   disabled={aiLoading}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-plum-50 dark:bg-plum-950/80 hover:bg-plum-100 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 font-bold transition-all disabled:opacity-50"
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-plum-50 dark:bg-plum-950/80 hover:bg-plum-100 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 font-bold transition-all disabled:opacity-50 min-h-[38px]"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-terracotta-500" />
+                  <Sparkles className="w-3.5 h-3.5 text-terracotta-500 shrink-0" />
                   <span>{aiLoading ? 'Enhancing...' : '✨ Generate Summary'}</span>
                 </button>
               </div>
@@ -465,7 +465,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                 rows={6}
                 value={resume.summary || ''}
                 onChange={(e) => onChange({ ...resume, summary: e.target.value })}
-                className="w-full bg-surface-elevated border border-surface-border rounded-xl p-3 text-surface-text leading-relaxed focus:outline-none focus:border-plum-600"
+                className="w-full bg-surface-elevated border border-surface-border rounded-xl p-3 text-surface-text leading-relaxed focus:outline-none focus:border-plum-600 font-medium"
                 placeholder="Write a compelling 3-4 sentence overview of your career background, core competencies, and notable accomplishments. Or click 'Generate Summary' to craft one with AI!"
               />
               <p className="text-[11px] text-surface-muted">
@@ -476,7 +476,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
 
           {/* Tab 3: Work Experience */}
           {activeTab === 'experience' && (
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               <div className="flex justify-between items-center pb-2 border-b border-surface-border">
                 <h3 className="font-bold text-sm text-surface-text flex items-center gap-2">
                   <Briefcase className="w-4 h-4 text-plum-800 dark:text-plum-300" />
@@ -484,7 +484,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                 </h3>
                 <button
                   onClick={addExperience}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold min-h-[36px]"
                 >
                   <Plus className="w-3.5 h-3.5 text-terracotta-300" />
                   <span>Add Position</span>
@@ -492,28 +492,28 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
               </div>
 
               {(resume.experience || []).map((exp, expIdx) => (
-                <div key={expIdx} className="bg-surface-elevated rounded-2xl p-4 border border-surface-border space-y-3 shadow-subtle">
+                <div key={expIdx} className="bg-surface-elevated rounded-2xl p-3.5 sm:p-4 border border-surface-border space-y-3 shadow-subtle">
                   <div className="flex justify-between items-start gap-2">
                     <span className="font-bold text-surface-text text-xs">#{expIdx + 1} Work Experience</span>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleAiGenerateBullets(expIdx)}
                         disabled={aiLoading}
-                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-terracotta-50 dark:bg-terracotta-950/60 hover:bg-terracotta-100 text-terracotta-700 dark:text-terracotta-300 border border-terracotta-200 dark:border-terracotta-800 font-bold text-[11px]"
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-terracotta-50 dark:bg-terracotta-950/60 hover:bg-terracotta-100 text-terracotta-700 dark:text-terracotta-300 border border-terracotta-200 dark:border-terracotta-800 font-bold text-[11px] min-h-[32px]"
                       >
                         <Sparkles className="w-3 h-3 text-amber-500" />
                         <span>✨ Improve Bullet</span>
                       </button>
                       <button
                         onClick={() => removeExperience(expIdx)}
-                        className="p-1 text-surface-muted hover:text-terracotta-600"
+                        className="p-1.5 text-surface-muted hover:text-terracotta-600 rounded-lg hover:bg-surface-card"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                       <label className="block text-surface-muted font-medium mb-1">Job Title</label>
                       <input
@@ -570,7 +570,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
 
                     {(exp.bullets || []).map((bullet, bIdx) => (
                       <div key={bIdx} className="flex items-start gap-2">
-                        <span className="text-terracotta-500 mt-2 font-bold">•</span>
+                        <span className="text-terracotta-500 mt-2 font-bold shrink-0">•</span>
                         <textarea
                           rows={2}
                           value={bullet}
@@ -598,14 +598,14 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
               <div className="flex justify-between items-center pb-2 border-b border-surface-border">
                 <h3 className="font-bold text-sm text-surface-text flex items-center gap-2">
                   <Wrench className="w-4 h-4 text-plum-800 dark:text-plum-300" />
-                  Technical & Core Skills
+                  Technical Skills
                 </h3>
                 <button
                   onClick={addSkillGroup}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold min-h-[36px]"
                 >
                   <Plus className="w-3.5 h-3.5 text-terracotta-300" />
-                  <span>Add Category</span>
+                  <span>Add Group</span>
                 </button>
               </div>
 
@@ -653,7 +653,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                 </h3>
                 <button
                   onClick={addProject}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold min-h-[36px]"
                 >
                   <Plus className="w-3.5 h-3.5 text-terracotta-300" />
                   <span>Add Project</span>
@@ -661,7 +661,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
               </div>
 
               {(resume.projects || []).map((proj, pIdx) => (
-                <div key={pIdx} className="bg-surface-elevated p-4 rounded-2xl border border-surface-border space-y-3 shadow-subtle">
+                <div key={pIdx} className="bg-surface-elevated p-3.5 sm:p-4 rounded-2xl border border-surface-border space-y-3 shadow-subtle">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-surface-text text-xs">Project #{pIdx + 1}</span>
                     <button onClick={() => removeProject(pIdx)} className="text-surface-muted hover:text-terracotta-600">
@@ -669,7 +669,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                       <label className="block text-surface-muted font-medium mb-1">Project Name</label>
                       <input
@@ -681,7 +681,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                       />
                     </div>
                     <div>
-                      <label className="block text-surface-muted font-medium mb-1">Live URL / Repository</label>
+                      <label className="block text-surface-muted font-medium mb-1">Live Demo / Repository</label>
                       <input
                         type="url"
                         value={proj.url || ''}
@@ -704,7 +704,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                   </div>
 
                   <div>
-                    <label className="block text-surface-muted font-medium mb-1">Description & Impact</label>
+                    <label className="block text-surface-muted font-medium mb-1">Description</label>
                     <textarea
                       rows={2}
                       value={proj.description || ''}
@@ -724,11 +724,11 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
               <div className="flex justify-between items-center pb-2 border-b border-surface-border">
                 <h3 className="font-bold text-sm text-surface-text flex items-center gap-2">
                   <GraduationCap className="w-4 h-4 text-plum-800 dark:text-plum-300" />
-                  Education & Academics
+                  Education
                 </h3>
                 <button
                   onClick={addEducation}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold"
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold min-h-[36px]"
                 >
                   <Plus className="w-3.5 h-3.5 text-terracotta-300" />
                   <span>Add Degree</span>
@@ -736,7 +736,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
               </div>
 
               {(resume.education || []).map((edu, eIdx) => (
-                <div key={eIdx} className="bg-surface-elevated p-4 rounded-2xl border border-surface-border space-y-3 shadow-subtle">
+                <div key={eIdx} className="bg-surface-elevated p-3.5 sm:p-4 rounded-2xl border border-surface-border space-y-3 shadow-subtle">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-surface-text text-xs">Degree #{eIdx + 1}</span>
                     <button onClick={() => removeEducation(eIdx)} className="text-surface-muted hover:text-terracotta-600">
@@ -744,7 +744,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                     <div>
                       <label className="block text-surface-muted font-medium mb-1">Degree</label>
                       <input
@@ -845,7 +845,7 @@ export default function ResumeEditor({ resume, onChange, onSave, isSaving }) {
                     const newC = [...(resume.certifications || []), { name: '', issuer: '' }];
                     onChange({ ...resume, certifications: newC });
                   }}
-                  className="w-full py-2.5 border border-dashed border-surface-border rounded-xl text-xs font-bold text-plum-900 dark:text-plum-300 hover:bg-surface-elevated transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 border border-dashed border-surface-border rounded-xl text-xs font-bold text-plum-900 dark:text-plum-300 hover:bg-surface-elevated transition-colors flex items-center justify-center gap-1.5 min-h-[42px]"
                 >
                   <Plus className="w-3.5 h-3.5 text-terracotta-500" />
                   <span>Add Another Certification</span>

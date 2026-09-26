@@ -25,10 +25,38 @@
     --surface-subtle: #6E6460;
   }
 
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
     background-color: var(--surface-bg);
     color: var(--surface-text);
+    min-height: 100dvh;
   }
+}
+
+/* Global Responsive Main Container */
+.app-container {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(16px, 4vw, 32px);
+  padding-right: clamp(16px, 4vw, 32px);
+}
+
+/* Fluid Heading Typography Utilities */
+.text-fluid-hero {
+  font-size: clamp(1.85rem, 5.5vw, 3.5rem);
+  line-height: 1.12;
+}
+
+.text-fluid-title {
+  font-size: clamp(1.35rem, 3.5vw, 2.25rem);
+  line-height: 1.2;
 }
 
 /* Custom Refined Scrollbar */
@@ -60,9 +88,17 @@
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
 }
 
-.solid-card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
+@media (hover: hover) and (pointer: fine) {
+  .solid-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Touch Friendly Interactive Targets */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Resume Paper Simulation */
@@ -97,4 +133,5 @@
     padding: 0 !important;
   }
 }
+
 
