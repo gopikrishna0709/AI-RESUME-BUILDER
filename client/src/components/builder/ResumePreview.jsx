@@ -58,6 +58,10 @@ export default function ResumePreview({ resume, onUpdateTheme, onSelectTemplate 
   const handleResetZoom = () => setZoom(calculateOptimalZoom());
 
   const handlePrint = () => {
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+    window.scrollTo(0, 0);
     window.print();
   };
 
