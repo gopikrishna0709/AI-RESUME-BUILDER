@@ -113,14 +113,27 @@ export default function Navbar({ activeTab, onSelectTab, onLogout }) {
             <button
               onClick={toggleTheme}
               title={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-              className="p-2 sm:p-2.5 rounded-xl bg-surface-elevated hover:bg-surface-hover border border-surface-border text-surface-text transition-all flex items-center justify-center touch-target"
-              aria-label="Toggle color theme"
+              className="relative w-14 h-8 sm:w-16 sm:h-8.5 rounded-full bg-surface-elevated hover:bg-surface-hover border border-surface-border p-1 transition-all duration-300 flex items-center justify-between shadow-subtle group focus:outline-none focus:ring-2 focus:ring-plum-500/30"
+              aria-label={isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
             >
-              {isDark ? (
-                <Sun className="w-4 h-4 text-amber-400 transition-transform duration-300" />
-              ) : (
-                <Moon className="w-4 h-4 text-plum-900 transition-transform duration-300" />
-              )}
+              {/* Background icon hints */}
+              <Sun className={`w-3.5 h-3.5 text-amber-500/60 transition-opacity duration-200 ml-1 ${isDark ? 'opacity-40' : 'opacity-0'}`} />
+              <Moon className={`w-3.5 h-3.5 text-plum-400/60 transition-opacity duration-200 mr-1 ${isDark ? 'opacity-0' : 'opacity-40'}`} />
+
+              {/* Sliding Indicator Knob */}
+              <span
+                className={`absolute top-0.5 bottom-0.5 w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-full flex items-center justify-center transition-all duration-300 transform shadow-sm ${
+                  isDark
+                    ? 'left-[calc(100%-1.65rem)] sm:left-[calc(100%-1.8rem)] bg-plum-900 text-amber-300 border border-plum-700'
+                    : 'left-0.5 bg-white text-plum-900 border border-surface-border'
+                }`}
+              >
+                {isDark ? (
+                  <Moon className="w-3.5 h-3.5 text-amber-400 transition-transform duration-300 rotate-0" />
+                ) : (
+                  <Sun className="w-3.5 h-3.5 text-amber-500 transition-transform duration-300 rotate-0" />
+                )}
+              </span>
             </button>
 
             {/* Auth Section (Desktop, Tablet & Mobile) */}
@@ -291,14 +304,31 @@ export default function Navbar({ activeTab, onSelectTab, onLogout }) {
             </div>
 
             {/* Theme Toggle row in mobile menu */}
-            <div className="pt-2 border-t border-surface-border flex items-center justify-between px-1">
-              <span className="text-xs font-bold text-surface-text">Theme Preference</span>
+            <div className="pt-3 border-t border-surface-border flex items-center justify-between px-1">
+              <div>
+                <div className="text-xs font-bold text-surface-text">Theme Preference</div>
+                <div className="text-[10px] text-surface-muted">{isDark ? 'Dark Mode Active' : 'Light Mode Active'}</div>
+              </div>
               <button
                 onClick={toggleTheme}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-elevated border border-surface-border text-xs font-bold text-surface-text"
+                className="relative w-14 h-8 rounded-full bg-surface-elevated hover:bg-surface-hover border border-surface-border p-1 transition-all duration-300 flex items-center justify-between shadow-subtle group"
+                aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               >
-                {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-plum-900" />}
-                <span>{isDark ? 'Dark Mode' : 'Light Mode'}</span>
+                <Sun className={`w-3.5 h-3.5 text-amber-500/60 transition-opacity duration-200 ml-1 ${isDark ? 'opacity-40' : 'opacity-0'}`} />
+                <Moon className={`w-3.5 h-3.5 text-plum-400/60 transition-opacity duration-200 mr-1 ${isDark ? 'opacity-0' : 'opacity-40'}`} />
+                <span
+                  className={`absolute top-0.5 bottom-0.5 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 transform shadow-sm ${
+                    isDark
+                      ? 'left-[calc(100%-1.65rem)] bg-plum-900 text-amber-300 border border-plum-700'
+                      : 'left-0.5 bg-white text-plum-900 border border-surface-border'
+                  }`}
+                >
+                  {isDark ? (
+                    <Moon className="w-3.5 h-3.5 text-amber-400" />
+                  ) : (
+                    <Sun className="w-3.5 h-3.5 text-amber-500" />
+                  )}
+                </span>
               </button>
             </div>
           </div>

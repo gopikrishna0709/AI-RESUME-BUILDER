@@ -204,12 +204,13 @@ export default function CareerAiHub({ activeResume }) {
 
           {/* Question List */}
           <div className="space-y-3">
-            {questions.map((q) => {
+            {questions.map((q, idx) => {
               const isExpanded = expandedQId === q.id;
+              const staggerClass = `stagger-${(idx % 6) + 1}`;
               return (
                 <div
                   key={q.id}
-                  className="bg-surface-card border border-surface-border hover:border-plum-500/40 rounded-2xl p-4 sm:p-5 shadow-subtle transition-all space-y-3"
+                  className={`interactive-card hover:border-plum-500/40 rounded-2xl p-4 sm:p-5 shadow-subtle space-y-3 animate-card-entrance ${staggerClass}`}
                 >
                   <div
                     onClick={() => setExpandedQId(isExpanded ? null : q.id)}

@@ -215,14 +215,15 @@ export default function JobBoard({ onSelectJobForMatch, activeResume }) {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {filteredJobs.map((job) => {
+            {filteredJobs.map((job, idx) => {
               const matchScore = calculateQuickMatchScore(job);
               const isSaved = savedJobIds.includes(job._id);
+              const staggerClass = `stagger-${(idx % 8) + 1}`;
 
               return (
                 <div
                   key={job._id}
-                  className="bg-surface-card border border-surface-border hover:border-plum-500/50 rounded-3xl p-4 sm:p-6 shadow-subtle hover:shadow-card transition-all duration-200 flex flex-col justify-between gap-4"
+                  className={`interactive-card hover:border-plum-500/50 rounded-3xl p-4 sm:p-6 shadow-subtle flex flex-col justify-between gap-4 animate-card-entrance ${staggerClass}`}
                 >
                   <div className="space-y-3">
                     <div className="flex justify-between items-start gap-2.5">

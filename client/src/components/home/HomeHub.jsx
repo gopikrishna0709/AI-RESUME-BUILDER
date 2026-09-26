@@ -355,7 +355,7 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
         {/* Dashboard Key Metrics Grid (1 Col on mobile, 2 on tablet, 4 on desktop) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: Resume Strength Gauge */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5">
+          <div className="interactive-card rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5 animate-card-entrance stagger-1">
             <div className="flex items-center justify-between text-xs">
               <span className="text-surface-muted font-bold uppercase tracking-wider">Resume Strength</span>
               <span className="w-2 h-2 rounded-full bg-sage-500" />
@@ -374,7 +374,7 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
           </div>
 
           {/* Card 2: Job Match Potential */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5">
+          <div className="interactive-card rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5 animate-card-entrance stagger-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-surface-muted font-bold uppercase tracking-wider">Job Compatibility</span>
               <span className="w-2 h-2 rounded-full bg-terracotta-500" />
@@ -393,7 +393,7 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
           </div>
 
           {/* Card 3: Skills Detected */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5">
+          <div className="interactive-card rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5 animate-card-entrance stagger-3">
             <div className="flex items-center justify-between text-xs">
               <span className="text-surface-muted font-bold uppercase tracking-wider">Detected Skills</span>
               <Code2 className="w-4 h-4 text-amber-500" />
@@ -412,7 +412,7 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
           </div>
 
           {/* Card 4: Active Template */}
-          <div className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5">
+          <div className="interactive-card rounded-2xl p-4 sm:p-5 shadow-subtle space-y-2.5 animate-card-entrance stagger-4">
             <div className="flex items-center justify-between text-xs">
               <span className="text-surface-muted font-bold uppercase tracking-wider">Active Design</span>
               <Layers className="w-4 h-4 text-plum-700 dark:text-plum-300" />
@@ -452,13 +452,14 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-          {MODULES.map((mod) => {
+          {MODULES.map((mod, idx) => {
             const Icon = mod.icon;
+            const staggerClass = `stagger-${(idx % 6) + 1}`;
             return (
               <div
                 key={mod.id}
                 onClick={() => onSelectTab(mod.id)}
-                className={`group bg-surface-card border border-surface-border ${mod.accentBorder} rounded-3xl p-5 sm:p-6 shadow-subtle hover:shadow-card transition-all duration-200 hover:-translate-y-1 cursor-pointer flex flex-col justify-between gap-4 sm:gap-5`}
+                className={`group interactive-card ${mod.accentBorder} rounded-3xl p-5 sm:p-6 cursor-pointer flex flex-col justify-between gap-4 sm:gap-5 animate-card-entrance ${staggerClass}`}
               >
                 <div className="space-y-3.5">
                   <div className="flex items-center justify-between gap-2">
@@ -479,21 +480,21 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
                     </p>
                   </div>
 
-                  {/* Sub-features checklist */}
-                  <div className="pt-2.5 border-t border-surface-border space-y-1.5">
-                    {mod.features.map((feat, idx) => (
-                      <div key={idx} className="flex items-center gap-2 text-xs text-surface-text">
-                        <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0" />
-                        <span className="truncate">{feat}</span>
+                  {/* Feature Checklist List */}
+                  <div className="space-y-2 pt-2 border-t border-surface-border/60">
+                    {mod.features.map((feat, i) => (
+                      <div key={i} className="flex items-start gap-2 text-xs text-surface-muted">
+                        <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0 mt-0.5" />
+                        <span className="leading-tight">{feat}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Card CTA */}
+                {/* Card Footer CTA Button */}
                 <div className="pt-2.5 border-t border-surface-border flex items-center justify-between text-xs font-bold text-plum-900 dark:text-plum-300 group-hover:text-terracotta-600 transition-colors">
                   <span>{mod.cta}</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform shrink-0" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform shrink-0" />
                 </div>
               </div>
             );
@@ -502,9 +503,9 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
           {/* Create New Resume Tile */}
           <div
             onClick={onOpenCreateResume}
-            className="group bg-surface-elevated border-2 border-dashed border-surface-border hover:border-terracotta-400 rounded-3xl p-5 sm:p-6 shadow-subtle hover:shadow-card transition-all duration-200 hover:-translate-y-1 cursor-pointer flex flex-col items-center justify-center text-center gap-3 min-h-[250px] sm:min-h-[290px]"
+            className="group interactive-card border-2 border-dashed border-surface-border hover:border-terracotta-400 rounded-3xl p-5 sm:p-6 cursor-pointer flex flex-col items-center justify-center text-center gap-3 min-h-[250px] sm:min-h-[290px] animate-card-entrance stagger-6"
           >
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-plum-50 dark:bg-plum-950 text-plum-900 dark:text-plum-200 border border-plum-200 dark:border-plum-800 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 shadow-subtle">
               <Plus className="w-6 h-6 text-terracotta-500" />
             </div>
             <div>
@@ -515,7 +516,7 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
                 Start from scratch or tailor a duplicate for another target position.
               </p>
             </div>
-            <span className="px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs shadow-subtle mt-1">
+            <span className="px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs shadow-subtle mt-1 transition-all group-hover:scale-105">
               + Add Resume
             </span>
           </div>
