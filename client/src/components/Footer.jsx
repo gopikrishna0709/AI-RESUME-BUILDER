@@ -264,11 +264,27 @@ export default function Footer({ onSelectTab }) {
               </li>
               <li className="flex items-center gap-1.5">
                 <Globe className="w-3 h-3 text-plum-700 dark:text-plum-300 shrink-0" />
-                <span>Vercel + Render Edge</span>
+                <a
+                  href="https://careermatch-rouge-phi.vercel.app/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors flex items-center gap-1"
+                >
+                  <span>Live on Vercel</span>
+                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                </a>
               </li>
               <li className="flex items-center gap-1.5">
                 <Award className="w-3 h-3 text-terracotta-500 shrink-0" />
-                <span>ATS Parsing Engine</span>
+                <a
+                  href="https://github.com/gopikrishna0709/CareerMatch"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-terracotta-600 dark:hover:text-terracotta-400 transition-colors flex items-center gap-1"
+                >
+                  <span>GitHub Repository</span>
+                  <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                </a>
               </li>
               <li className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-3 h-3 text-sage-600 shrink-0" />
