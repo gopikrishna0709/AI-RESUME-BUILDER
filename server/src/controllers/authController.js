@@ -1,10 +1,14 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'ai_resume_secret_jwt_2026', {
-    expiresIn: '30d',
-  });
+  return jwt.sign(
+    { id },
+    process.env.JWT_SECRET || 'ai_resume_builder_jwt_secret_token_key_2026',
+    { expiresIn: '30d' }
+  );
 };
 
 // @desc    Register a new user
@@ -14,21 +18,40 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password, title, targetRole } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
+    if (!name || !name.trim()) {
+      return res.status(400).json({ success: false, message: 'Please provide your full name.' });
     }
 
-    const userExists = await User.findOne({ email: email.toLowerCase() });
+    if (!email || !email.trim()) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      return res.status(400).json({ success: false, message: 'Please enter a valid email address.' });
+    }
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long.',
+      });
+    }
+
+    const userExists = await User.findOne({ email: cleanEmail });
     if (userExists) {
-      return res.status(400).json({ success: false, message: 'An account with this email already exists' });
+      return res.status(400).json({
+        success: false,
+        message: 'An account with this email already exists.',
+      });
     }
 
     const user = await User.create({
-      name,
-      email: email.toLowerCase(),
+      name: name.trim(),
+      email: cleanEmail,
       password,
-      title: title || 'Software Engineer',
-      targetRole: targetRole || title || 'Full Stack Developer',
+      title: title?.trim() || 'Software Engineer',
+      targetRole: targetRole?.trim() || title?.trim() || 'Full Stack Developer',
     });
 
     const token = generateToken(user._id);
@@ -47,7 +70,10 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ success: false, message: error.message || 'Server error during registration' });
+    res.status(500).json({
+      success: false,
+      message: 'Unable to create your account right now. Please try again.',
+    });
   }
 };
 
@@ -58,18 +84,35 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ success: false, message: 'Please provide email and password' });
+    if (!email || !email.trim() || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email and password.',
+      });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const cleanEmail = email.trim().toLowerCase();
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please enter a valid email address.',
+      });
+    }
+
+    const user = await User.findOne({ email: cleanEmail });
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({
+        success: false,
+        message: 'No account found with this email.',
+      });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(401).json({
+        success: false,
+        message: 'Incorrect password.',
+      });
     }
 
     const token = generateToken(user._id);
@@ -88,7 +131,10 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ success: false, message: error.message || 'Server error during login' });
+    res.status(500).json({
+      success: false,
+      message: 'Unable to sign in right now. Please try again.',
+    });
   }
 };
 

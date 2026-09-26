@@ -122,8 +122,6 @@ export default function App() {
   useEffect(() => {
     if (isAuthenticated) {
       loadResumes();
-    } else {
-      demoLogin().catch(() => {});
     }
   }, [isAuthenticated]);
 
