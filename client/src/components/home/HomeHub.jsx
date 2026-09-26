@@ -19,6 +19,7 @@ import {
   Code2,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import Footer from '../Footer';
 
 export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume }) {
   const { user } = useAuth();
@@ -522,6 +523,49 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
           </div>
         </div>
       </section>
+
+      {/* 4. HIGH-CONVERTING CAREER ACCELERATION CTA */}
+      <section className="bg-plum-900 text-white rounded-3xl p-6 sm:p-10 lg:p-12 shadow-lift relative overflow-hidden">
+        {/* Subtle Decorative Background Lines */}
+        <div className="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-plum-800/40 blur-2xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-32 h-32 rounded-full bg-terracotta-500/10 blur-xl pointer-events-none" />
+
+        <div className="relative z-10 max-w-3xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-plum-800/80 text-terracotta-300 text-xs font-bold border border-plum-700">
+            <Sparkles className="w-3.5 h-3.5 text-terracotta-400" />
+            <span>Ready for your next role?</span>
+          </div>
+
+          <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black font-display tracking-tight text-plum-50">
+            Accelerate your career trajectory with intelligent matching.
+          </h3>
+
+          <p className="text-plum-200 text-xs sm:text-sm leading-relaxed max-w-xl">
+            Create an ATS-proof resume in minutes, audit your job description alignment with Gemini NLP, and practice real-world interview responses.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              onClick={() => onSelectTab('builder')}
+              className="px-5 py-2.5 rounded-xl bg-white text-plum-950 hover:bg-plum-50 font-bold text-xs sm:text-sm shadow-subtle transition-all active:scale-95 flex items-center gap-2 min-h-[44px]"
+            >
+              <FileText className="w-4 h-4 text-plum-900" />
+              <span>Launch Resume Builder</span>
+            </button>
+
+            <button
+              onClick={() => onSelectTab('matcher')}
+              className="px-5 py-2.5 rounded-xl bg-plum-800 hover:bg-plum-700 text-white border border-plum-700 font-bold text-xs sm:text-sm shadow-subtle transition-all active:scale-95 flex items-center gap-2 min-h-[44px]"
+            >
+              <Target className="w-4 h-4 text-terracotta-300" />
+              <span>Match a Target Job</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. SIGNATURE CAREERMATCH FOOTER */}
+      <Footer onSelectTab={onSelectTab} />
     </div>
   );
 }
