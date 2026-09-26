@@ -55,27 +55,49 @@ export default function JobMatcherDashboard({
 
   const fetchResumesAndJobs = async () => {
     try {
-      const [resumesRes, jobsRes] = await Promise.all([
-        resumeAPI.getResumes(),
-        jobAPI.getJobs(),
-      ]);
-      if (resumesRes.data.success) {
-        setResumes(resumesRes.data.data);
-        if (!selectedResumeId && resumesRes.data.data.length > 0) {
-          setSelectedResumeId(resumesRes.data.data[0]._id);
+      // 1. Fetch public curated jobs
+      try {
+        const jobsRes = await jobAPI.getJobs();
+        if (jobsRes.data?.success && jobsRes.data.data?.length > 0) {
+          setCuratedJobs(jobsRes.data.data);
+          setSelectedJobId(jobsRes.data.data[0]._id);
+        }
+      } catch (jobErr) {
+        console.warn('Jobs fetch notice:', jobErr.message);
+      }
+
+      // 2. Fetch user resumes if token exists; otherwise use activeResume
+      const token = localStorage.getItem('resumai_jwt_token');
+      if (token) {
+        try {
+          const resumesRes = await resumeAPI.getResumes();
+          if (resumesRes.data?.success && resumesRes.data.data?.length > 0) {
+            setResumes(resumesRes.data.data);
+            if (!selectedResumeId) {
+              setSelectedResumeId(resumesRes.data.data[0]._id);
+            }
+            return;
+          }
+        } catch (resErr) {
+          // Fall back gracefully to active resume
         }
       }
-      if (jobsRes.data.success && jobsRes.data.data.length > 0) {
-        setCuratedJobs(jobsRes.data.data);
-        setSelectedJobId(jobsRes.data.data[0]._id);
+
+      if (activeResume) {
+        setResumes([activeResume]);
+        setSelectedResumeId(activeResume._id || 'default_resume');
       }
     } catch (err) {
-      console.error('Failed to load initial data for matcher:', err);
+      console.warn('Initial data load notice for matcher:', err.message);
+      if (activeResume) {
+        setResumes([activeResume]);
+        setSelectedResumeId(activeResume._id || 'default_resume');
+      }
     }
   };
 
   const handleRunMatch = async () => {
-    if (!selectedResumeId) {
+    if (!selectedResumeId && !activeResume) {
       alert('Please select a resume to match.');
       return;
     }
@@ -96,8 +118,11 @@ export default function JobMatcherDashboard({
       setMatchResult(null);
       setTailoringApplied(false);
 
+      const targetResumeObj = resumes.find(r => r._id === selectedResumeId) || activeResume;
+
       const payload = {
-        resumeId: selectedResumeId,
+        resumeId: selectedResumeId || activeResume?._id || 'default_resume',
+        resumeData: targetResumeObj,
         jobId: inputMode === 'curated' ? selectedJobId : undefined,
         customJobTitle: inputMode === 'custom' ? customTitle : undefined,
         customCompany: inputMode === 'custom' ? customCompany : undefined,

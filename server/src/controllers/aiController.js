@@ -57,15 +57,23 @@ exports.generateBullets = async (req, res) => {
 // @access  Private
 exports.matchJob = async (req, res) => {
   try {
-    const { resumeId, jobId, customJobTitle, customCompany, customJobDescription } = req.body;
+    const { resumeId, resumeData, jobId, customJobTitle, customCompany, customJobDescription } = req.body;
 
-    if (!resumeId) {
-      return res.status(400).json({ success: false, message: 'Please select a resume to match' });
+    let resume = null;
+    if (resumeId && resumeId !== 'default_resume' && !resumeId.startsWith('guest_')) {
+      try {
+        resume = await Resume.findById(resumeId);
+      } catch (e) {
+        resume = null;
+      }
     }
 
-    const resume = await Resume.findById(resumeId);
+    if (!resume && resumeData) {
+      resume = resumeData;
+    }
+
     if (!resume) {
-      return res.status(404).json({ success: false, message: 'Resume not found' });
+      return res.status(400).json({ success: false, message: 'Please select or provide a resume to match' });
     }
 
     let targetTitle = customJobTitle;
@@ -73,12 +81,14 @@ exports.matchJob = async (req, res) => {
     let targetDescription = customJobDescription;
 
     if (jobId) {
-      const job = await Job.findById(jobId);
-      if (job) {
-        targetTitle = job.title;
-        targetCompany = job.company;
-        targetDescription = `${job.description}\n\nRequirements:\n${(job.requirements || []).join('\n')}\nSkills: ${(job.requiredSkills || []).join(', ')}`;
-      }
+      try {
+        const job = await Job.findById(jobId);
+        if (job) {
+          targetTitle = job.title;
+          targetCompany = job.company;
+          targetDescription = `${job.description}\n\nRequirements:\n${(job.requirements || []).join('\n')}\nSkills: ${(job.requiredSkills || []).join(', ')}`;
+        }
+      } catch (e) {}
     }
 
     if (!targetDescription) {
@@ -93,28 +103,48 @@ exports.matchJob = async (req, res) => {
       company: targetCompany,
     });
 
-    // Save match record in database
-    const matchRecord = await ApplicationMatch.create({
-      userId: req.user.id,
-      resumeId: resume._id,
-      jobId: jobId || null,
-      jobTitle: targetTitle || 'Target Role',
-      company: targetCompany || 'Target Organization',
-      jobDescription: targetDescription,
-      overallMatchScore: analysis.overallMatchScore,
-      skillsMatchScore: analysis.skillsMatchScore,
-      experienceMatchScore: analysis.experienceMatchScore,
-      educationMatchScore: analysis.educationMatchScore,
-      atsPassedRate: analysis.atsPassedRate,
-      matchingSkills: analysis.matchingSkills,
-      missingSkills: analysis.missingSkills,
-      keyStrengths: analysis.keyStrengths,
-      criticalGaps: analysis.criticalGaps,
-      tailoringRecommendations: analysis.tailoringRecommendations,
-      tailoredSummary: analysis.tailoredSummary,
-      tailoredBullets: analysis.tailoredBullets,
-      status: 'Tailored',
-    });
+    // Save match record in database if authenticated user
+    let matchRecord;
+    if (req.user && req.user.id && resume._id && resumeId !== 'default_resume') {
+      try {
+        matchRecord = await ApplicationMatch.create({
+          userId: req.user.id,
+          resumeId: resume._id,
+          jobId: jobId || null,
+          jobTitle: targetTitle || 'Target Role',
+          company: targetCompany || 'Target Organization',
+          jobDescription: targetDescription,
+          overallMatchScore: analysis.overallMatchScore,
+          skillsMatchScore: analysis.skillsMatchScore,
+          experienceMatchScore: analysis.experienceMatchScore,
+          educationMatchScore: analysis.educationMatchScore,
+          atsPassedRate: analysis.atsPassedRate,
+          matchingSkills: analysis.matchingSkills,
+          missingSkills: analysis.missingSkills,
+          keyStrengths: analysis.keyStrengths,
+          criticalGaps: analysis.criticalGaps,
+          tailoringRecommendations: analysis.tailoringRecommendations,
+          tailoredSummary: analysis.tailoredSummary,
+          tailoredBullets: analysis.tailoredBullets,
+          status: 'Tailored',
+        });
+      } catch (dbErr) {
+        console.warn('Could not persist match history record:', dbErr.message);
+      }
+    }
+
+    if (!matchRecord) {
+      matchRecord = {
+        _id: 'match_' + Date.now(),
+        resumeId: resume._id || 'default_resume',
+        jobId: jobId || null,
+        jobTitle: targetTitle || 'Target Role',
+        company: targetCompany || 'Target Organization',
+        jobDescription: targetDescription,
+        ...analysis,
+        status: 'Guest',
+      };
+    }
 
     res.json({
       success: true,

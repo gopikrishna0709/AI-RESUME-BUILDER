@@ -18,7 +18,7 @@ const protect = async (req, res, next) => {
       if (!req.user) {
         return res.status(401).json({ success: false, message: 'User not found with this token' });
       }
-      next();
+      return next();
     } catch (error) {
       console.error('Auth middleware error:', error.message);
       return res.status(401).json({ success: false, message: 'Not authorized, token invalid or expired' });
@@ -30,4 +30,29 @@ const protect = async (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const optionalProtect = async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      if (token && token !== 'null' && token !== 'undefined') {
+        const decoded = jwt.verify(
+          token,
+          process.env.JWT_SECRET || 'ai_resume_builder_jwt_secret_token_key_2026'
+        );
+        req.user = await User.findById(decoded.id).select('-password');
+      }
+    } catch (error) {
+      // For optional auth routes, gracefully continue as guest if token is invalid
+      req.user = null;
+    }
+  }
+
+  next();
+};
+
+module.exports = { protect, optionalProtect };
