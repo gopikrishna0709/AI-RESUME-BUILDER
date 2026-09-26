@@ -4,7 +4,6 @@ import { authAPI } from '../services/api';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => {
     try {
       return localStorage.getItem('resumai_jwt_token') || '';
@@ -12,6 +11,16 @@ export const AuthProvider = ({ children }) => {
       return '';
     }
   });
+
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('resumai_user_data');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [loading, setLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register'
@@ -26,12 +35,16 @@ export const AuthProvider = ({ children }) => {
           if (res.data?.success && res.data?.user) {
             setUser(res.data.user);
             setToken(storedToken);
+            localStorage.setItem('resumai_user_data', JSON.stringify(res.data.user));
           } else {
             logout();
           }
         } catch (err) {
-          console.warn('Initial session validation failed, resetting auth');
-          logout();
+          console.warn('Initial session validation failed or offline, checking local token');
+          // If token was 401 unauthorized, log out
+          if (err.response?.status === 401) {
+            logout();
+          }
         }
       } else {
         logout();
@@ -47,6 +60,7 @@ export const AuthProvider = ({ children }) => {
       const newToken = res.data.token;
       const newUser = res.data.user;
       localStorage.setItem('resumai_jwt_token', newToken);
+      localStorage.setItem('resumai_user_data', JSON.stringify(newUser));
       setToken(newToken);
       setUser(newUser);
       setIsAuthModalOpen(false);
@@ -61,6 +75,7 @@ export const AuthProvider = ({ children }) => {
       const newToken = res.data.token;
       const newUser = res.data.user;
       localStorage.setItem('resumai_jwt_token', newToken);
+      localStorage.setItem('resumai_user_data', JSON.stringify(newUser));
       setToken(newToken);
       setUser(newUser);
       setIsAuthModalOpen(false);
@@ -75,6 +90,7 @@ export const AuthProvider = ({ children }) => {
       const newToken = res.data.token;
       const newUser = res.data.user;
       localStorage.setItem('resumai_jwt_token', newToken);
+      localStorage.setItem('resumai_user_data', JSON.stringify(newUser));
       setToken(newToken);
       setUser(newUser);
       setIsAuthModalOpen(false);
@@ -86,6 +102,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     try {
       localStorage.removeItem('resumai_jwt_token');
+      localStorage.removeItem('resumai_user_data');
       sessionStorage.clear();
     } catch (e) {
       console.error('Error clearing auth storage:', e);

@@ -123,12 +123,12 @@ export default function Navbar({ activeTab, onSelectTab, onLogout }) {
               )}
             </button>
 
-            {/* Desktop Auth Section */}
-            <div className="hidden sm:flex items-center gap-2">
+            {/* Auth Section (Desktop, Tablet & Mobile) */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {isAuthenticated ? (
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 bg-surface-elevated border border-surface-border rounded-xl px-2.5 sm:px-3 py-1.5">
-                    <div className="w-6 h-6 rounded-lg bg-plum-900 text-terracotta-300 flex items-center justify-center font-display font-bold text-xs">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <div className="flex items-center gap-1.5 sm:gap-2 bg-surface-elevated border border-surface-border rounded-xl px-2 sm:px-3 py-1 sm:py-1.5">
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-plum-900 text-terracotta-300 flex items-center justify-center font-display font-bold text-xs shrink-0">
                       {(user?.name || 'U').charAt(0).toUpperCase()}
                     </div>
                     <div className="hidden md:flex flex-col text-left">
@@ -144,17 +144,17 @@ export default function Navbar({ activeTab, onSelectTab, onLogout }) {
                   <button
                     onClick={handleLogoutClick}
                     title="Sign Out / Logout"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-elevated hover:bg-terracotta-50 dark:hover:bg-terracotta-950/60 border border-surface-border text-surface-muted hover:text-terracotta-600 font-bold text-xs transition-all touch-target shadow-subtle min-h-[38px]"
+                    className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-surface-elevated hover:bg-terracotta-50 dark:hover:bg-terracotta-950/60 border border-surface-border hover:border-terracotta-300 dark:hover:border-terracotta-700 text-surface-text hover:text-terracotta-600 font-bold text-xs transition-all touch-target shadow-subtle min-h-[36px] sm:min-h-[38px]"
                   >
                     <LogOut className="w-3.5 h-3.5 text-terracotta-500 shrink-0" />
-                    <span>Logout</span>
+                    <span className="inline">Logout</span>
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5 sm:gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <button
                     onClick={demoLogin}
-                    className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sage-50 dark:bg-sage-950/60 text-sage-800 dark:text-sage-300 border border-sage-200 dark:border-sage-800 text-xs font-bold hover:bg-sage-100 transition-all"
+                    className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sage-50 dark:bg-sage-950/60 text-sage-800 dark:text-sage-300 border border-sage-200 dark:border-sage-800 text-xs font-bold hover:bg-sage-100 transition-all min-h-[36px]"
                   >
                     <Zap className="w-3.5 h-3.5 text-amber-500" />
                     <span>Demo</span>
@@ -162,7 +162,7 @@ export default function Navbar({ activeTab, onSelectTab, onLogout }) {
 
                   <button
                     onClick={() => openAuthModal('login')}
-                    className="flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle active:scale-[0.98] transition-all"
+                    className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-plum-900 hover:bg-plum-800 text-white text-xs font-bold shadow-subtle active:scale-[0.98] transition-all min-h-[36px]"
                   >
                     <LogIn className="w-3.5 h-3.5 text-terracotta-300" />
                     <span>Sign In</span>
