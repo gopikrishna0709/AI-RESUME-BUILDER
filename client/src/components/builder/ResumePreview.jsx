@@ -58,11 +58,135 @@ export default function ResumePreview({ resume, onUpdateTheme, onSelectTemplate 
   const handleResetZoom = () => setZoom(calculateOptimalZoom());
 
   const handlePrint = () => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0;
+    const element = document.getElementById('resume-document');
+    if (!element) {
+      window.print();
+      return;
     }
-    window.scrollTo(0, 0);
-    window.print();
+
+    // Create an isolated, invisible print iframe to completely bypass parent layout & viewport zoom
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    iframe.style.visibility = 'hidden';
+    document.body.appendChild(iframe);
+
+    const iframeDoc = iframe.contentWindow?.document;
+    if (!iframeDoc) {
+      if (document.body.contains(iframe)) document.body.removeChild(iframe);
+      window.print();
+      return;
+    }
+
+    // Capture all stylesheet links, preconnect tags, and style elements from parent head
+    const headElements = [];
+    document.querySelectorAll('link[rel="stylesheet"], link[rel="preconnect"], style').forEach((node) => {
+      headElements.push(node.outerHTML);
+    });
+
+    const printStyles = `
+      <style>
+        @page {
+          size: A4 portrait;
+          margin: 12mm 15mm;
+        }
+        *, *::before, *::after {
+          box-sizing: border-box;
+        }
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          background: #ffffff !important;
+          color: #1e293b !important;
+          width: 100% !important;
+          height: auto !important;
+          min-height: 0 !important;
+          overflow: visible !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        #resume-document,
+        .resume-paper {
+          display: block !important;
+          visibility: visible !important;
+          position: static !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          min-height: 0 !important;
+          height: auto !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          box-shadow: none !important;
+          border: none !important;
+          border-radius: 0 !important;
+          background: #ffffff !important;
+          color: #1e293b !important;
+          transform: none !important;
+          page-break-after: auto;
+          page-break-inside: auto;
+        }
+        #resume-document.flex,
+        .resume-paper.flex {
+          display: flex !important;
+          flex-direction: row !important;
+        }
+        .resume-section,
+        .resume-item,
+        section,
+        article,
+        tr,
+        li {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+      </style>
+    `;
+
+    iframeDoc.open();
+    iframeDoc.write(`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="utf-8" />
+          <title>${resume.personalInfo?.fullName || 'My'}_Resume</title>
+          ${headElements.join('\n')}
+          ${printStyles}
+        </head>
+        <body>
+          ${element.outerHTML}
+        </body>
+      </html>
+    `);
+    iframeDoc.close();
+
+    const triggerPrint = () => {
+      try {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+      } catch (e) {
+        console.error('Print iframe error:', e);
+        window.print();
+      } finally {
+        setTimeout(() => {
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
+          }
+        }, 1500);
+      }
+    };
+
+    if (iframeDoc.readyState === 'complete') {
+      setTimeout(triggerPrint, 200);
+    } else {
+      iframe.onload = () => {
+        setTimeout(triggerPrint, 200);
+      };
+    }
   };
 
   const handleDownloadPdf = async () => {
