@@ -136,39 +136,22 @@ export default function App() {
     }
   }, [isAuthenticated]);
 
-  // Route Protection: Guard protected workspaces only AFTER initial auth check completes
-  useEffect(() => {
-    if (loading) return; // Do not prematurely redirect while checking token
-    const protectedTabs = ['builder', 'matcher', 'tools', 'jobs', 'career'];
-    if (!isAuthenticated && protectedTabs.includes(activeTab)) {
-      setActiveTab('home');
-      window.location.hash = 'home';
-      openAuthModal('login');
-    }
-  }, [isAuthenticated, loading, activeTab]);
-
   // Browser Navigation & Hash Sync
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
       const validTabs = ['home', 'builder', 'matcher', 'tools', 'jobs', 'career'];
       if (validTabs.includes(hash)) {
-        if (!isAuthenticated && hash !== 'home') {
-          setActiveTab('home');
-          window.location.hash = 'home';
-          openAuthModal('login');
-        } else {
-          setActiveTab(hash);
-          try {
-            sessionStorage.setItem('resumai_active_tab', hash);
-          } catch (e) {}
-        }
+        setActiveTab(hash);
+        try {
+          sessionStorage.setItem('resumai_active_tab', hash);
+        } catch (e) {}
       }
     };
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [isAuthenticated, loading]);
+  }, []);
 
   const loadResumes = async () => {
     try {
@@ -182,21 +165,8 @@ export default function App() {
     }
   };
 
-  // Protected Tab Navigation handler
+  // Direct Tab Navigation handler - allows free browsing across all sections
   const handleSelectTab = (tabId) => {
-    const protectedTabs = ['builder', 'matcher', 'tools', 'jobs', 'career'];
-    if (protectedTabs.includes(tabId) && !isAuthenticated) {
-      const tabNames = {
-        builder: 'Resume Builder',
-        matcher: 'Job Matcher',
-        tools: 'AI Resume Studio',
-        jobs: 'Job Matches',
-        career: 'Career AI Hub',
-      };
-      showToast(`Please sign in to access ${tabNames[tabId] || 'this workspace'}.`);
-      openAuthModal('login');
-      return;
-    }
     setActiveTab(tabId);
     window.location.hash = tabId;
     try {
@@ -204,7 +174,7 @@ export default function App() {
     } catch (e) {}
   };
 
-  // Complete Logout Workflow
+  // Complete Logout Workflow - clears session without forcing open the login modal
   const handleLogout = () => {
     logout();
     setResumes([]);
@@ -215,7 +185,6 @@ export default function App() {
       sessionStorage.removeItem('resumai_active_tab');
     } catch (e) {}
     showToast('Logged out successfully');
-    openAuthModal('login');
   };
 
   const handleSaveResume = async () => {
