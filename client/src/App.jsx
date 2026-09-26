@@ -105,7 +105,7 @@ const DEFAULT_RESUME = {
 };
 
 export default function App() {
-  const { isAuthenticated, demoLogin } = useAuth();
+  const { isAuthenticated, logout, openAuthModal } = useAuth();
   const [activeTab, setActiveTab] = useState('home'); // 'home' | 'builder' | 'matcher' | 'tools' | 'jobs' | 'career'
   const [resumes, setResumes] = useState([]);
   const [activeResume, setActiveResume] = useState(DEFAULT_RESUME);
@@ -125,6 +125,15 @@ export default function App() {
     }
   }, [isAuthenticated]);
 
+  // Route Protection: Prevent unauthenticated users from staying on protected workspaces
+  useEffect(() => {
+    const protectedTabs = ['builder', 'matcher', 'tools', 'jobs', 'career'];
+    if (!isAuthenticated && protectedTabs.includes(activeTab)) {
+      setActiveTab('home');
+      openAuthModal('login');
+    }
+  }, [isAuthenticated, activeTab]);
+
   const loadResumes = async () => {
     try {
       const res = await resumeAPI.getResumes();
@@ -137,7 +146,40 @@ export default function App() {
     }
   };
 
+  // Protected Tab Navigation handler
+  const handleSelectTab = (tabId) => {
+    const protectedTabs = ['builder', 'matcher', 'tools', 'jobs', 'career'];
+    if (protectedTabs.includes(tabId) && !isAuthenticated) {
+      const tabNames = {
+        builder: 'Resume Builder',
+        matcher: 'Job Matcher',
+        tools: 'AI Resume Studio',
+        jobs: 'Job Matches',
+        career: 'Career AI Hub',
+      };
+      showToast(`Please sign in to access ${tabNames[tabId] || 'this workspace'}.`);
+      openAuthModal('login');
+      return;
+    }
+    setActiveTab(tabId);
+  };
+
+  // Complete Logout Workflow
+  const handleLogout = () => {
+    logout();
+    setResumes([]);
+    setActiveResume(DEFAULT_RESUME);
+    setActiveTab('home');
+    showToast('Logged out successfully');
+    openAuthModal('login');
+  };
+
   const handleSaveResume = async () => {
+    if (!isAuthenticated) {
+      showToast('Please sign in to save your resume to MongoDB Atlas.');
+      openAuthModal('login');
+      return;
+    }
     try {
       setIsSaving(true);
       if (activeResume._id) {
@@ -163,6 +205,11 @@ export default function App() {
   };
 
   const handleCreateNewResume = async () => {
+    if (!isAuthenticated) {
+      showToast('Please sign in to create custom resumes.');
+      openAuthModal('login');
+      return;
+    }
     try {
       const res = await resumeAPI.createResume({
         title: `Resume ${resumes.length + 1}`,
@@ -181,6 +228,11 @@ export default function App() {
   };
 
   const handleDuplicateResume = async () => {
+    if (!isAuthenticated) {
+      showToast('Please sign in to clone resumes.');
+      openAuthModal('login');
+      return;
+    }
     if (!activeResume._id) return;
     try {
       const res = await resumeAPI.duplicateResume(activeResume._id);
@@ -224,7 +276,8 @@ export default function App() {
 
       <Navbar
         activeTab={activeTab}
-        onSelectTab={setActiveTab}
+        onSelectTab={handleSelectTab}
+        onLogout={handleLogout}
       />
 
       <AuthModal />
@@ -243,7 +296,7 @@ export default function App() {
         {activeTab === 'home' && (
           <HomeHub
             activeResume={activeResume}
-            onSelectTab={setActiveTab}
+            onSelectTab={handleSelectTab}
             onOpenCreateResume={handleCreateNewResume}
           />
         )}

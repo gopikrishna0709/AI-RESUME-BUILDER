@@ -19,7 +19,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
-export default function Navbar({ activeTab, onSelectTab }) {
+export default function Navbar({ activeTab, onSelectTab, onLogout }) {
   const { user, logout, openAuthModal, demoLogin, isAuthenticated } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,6 +47,15 @@ export default function Navbar({ activeTab, onSelectTab }) {
 
   const handleNavClick = (tabId) => {
     onSelectTab(tabId);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      logout();
+    }
     setIsMobileMenuOpen(false);
   };
 
@@ -84,7 +93,7 @@ export default function Navbar({ activeTab, onSelectTab }) {
               return (
                 <button
                   key={item.id}
-                  onClick={() => onSelectTab(item.id)}
+                  onClick={() => handleNavClick(item.id)}
                   className={`flex items-center gap-1.5 xl:gap-2 px-3 xl:px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     isActive
                       ? 'bg-plum-900 text-white shadow-subtle dark:bg-plum-800 dark:text-plum-50'
@@ -133,11 +142,12 @@ export default function Navbar({ activeTab, onSelectTab }) {
                   </div>
 
                   <button
-                    onClick={logout}
-                    title="Sign Out"
-                    className="p-2 rounded-xl bg-surface-elevated border border-surface-border text-surface-muted hover:text-terracotta-600 transition-all touch-target flex items-center justify-center"
+                    onClick={handleLogoutClick}
+                    title="Sign Out / Logout"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-elevated hover:bg-terracotta-50 dark:hover:bg-terracotta-950/60 border border-surface-border text-surface-muted hover:text-terracotta-600 font-bold text-xs transition-all touch-target shadow-subtle min-h-[38px]"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-3.5 h-3.5 text-terracotta-500 shrink-0" />
+                    <span>Logout</span>
                   </button>
                 </div>
               ) : (
@@ -220,14 +230,11 @@ export default function Navbar({ activeTab, onSelectTab }) {
                   </div>
                 </div>
                 <button
-                  onClick={() => {
-                    logout();
-                    setIsMobileMenuOpen(false);
-                  }}
+                  onClick={handleLogoutClick}
                   className="px-3 py-1.5 rounded-lg bg-surface-card border border-surface-border text-xs font-bold text-terracotta-600 hover:bg-terracotta-50 transition-all flex items-center gap-1"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>Sign Out</span>
+                  <span>Logout</span>
                 </button>
               </div>
             ) : (
