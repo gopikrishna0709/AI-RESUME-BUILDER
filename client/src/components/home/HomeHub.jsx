@@ -119,160 +119,158 @@ export default function HomeHub({ activeResume, onSelectTab, onOpenCreateResume 
 
   return (
     <div className="space-y-8 sm:space-y-10 max-w-7xl mx-auto pb-6">
-      {/* 1. ASYMMETRIC LANDING HERO */}
-      <section className="bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-8 lg:p-12 shadow-card transition-colors duration-200">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Fluid Responsive Typography & Value Prop */}
-          <div className="lg:col-span-7 space-y-4 sm:space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-plum-50 dark:bg-plum-950/80 text-plum-900 dark:text-plum-200 text-xs font-bold border border-plum-200 dark:border-plum-800">
-              <span className="w-2 h-2 rounded-full bg-terracotta-500 shrink-0" />
-              <span>Intelligent Career Matching Engine</span>
-            </div>
-
-            <h1 className="text-fluid-hero font-black text-surface-text tracking-tight font-display">
-              Build a Resume That <br className="hidden sm:inline" />
-              <span className="text-plum-900 dark:text-plum-300 underline decoration-terracotta-400 underline-offset-4 sm:underline-offset-8">
-                Gets Matched.
-              </span>
-            </h1>
-
-            <p className="text-surface-muted text-xs sm:text-sm md:text-base leading-relaxed max-w-xl">
-              Create ATS-tailored resumes, analyze real job descriptions with Google Gemini AI, identify missing skill gaps, and optimize your qualifications to win interviews.
-            </p>
-
-            {/* Main Action CTAs (Stack on small mobile, row on tablet/desktop) */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
-              <button
-                onClick={() => onSelectTab('builder')}
-                className="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs sm:text-sm shadow-card active:scale-[0.98] transition-all min-h-[46px]"
-              >
-                <FileText className="w-4 h-4 text-terracotta-300 shrink-0" />
-                <span>Build My Resume</span>
-                <ArrowRight className="w-4 h-4 shrink-0" />
-              </button>
-
-              <button
-                onClick={() => onSelectTab('matcher')}
-                className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-surface-elevated hover:bg-surface-hover text-surface-text border border-surface-border font-bold text-xs sm:text-sm transition-all min-h-[46px]"
-              >
-                <Target className="w-4 h-4 text-terracotta-500 shrink-0" />
-                <span>Match a Job</span>
-              </button>
-            </div>
-
-            {/* Highlights pill tags */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-xs text-surface-muted font-medium">
-              <div className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0" />
-                <span>ATS Scoring</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0" />
-                <span>1-Click Skill Gap Fix</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0" />
-                <span>PDF Export</span>
-              </div>
-            </div>
+      {/* 1. ASYMMETRIC LANDING HERO (Left content directly on canvas background, Pipeline in independent card) */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center pt-2 sm:pt-4 pb-2">
+        {/* Left Column: Direct Page Background Typography & Value Prop */}
+        <div className="lg:col-span-7 space-y-4 sm:space-y-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-card text-plum-900 dark:text-plum-200 text-xs font-bold border border-surface-border shadow-subtle">
+            <span className="w-2 h-2 rounded-full bg-terracotta-500 shrink-0" />
+            <span>Intelligent Career Matching Engine</span>
           </div>
 
-          {/* Right Column: Unique Interactive Match Pipeline Visualization */}
-          <div className="lg:col-span-5 bg-surface-elevated border border-surface-border rounded-2xl p-4 sm:p-6 space-y-3.5 shadow-subtle">
-            <div className="flex items-center justify-between pb-3 border-b border-surface-border">
-              <span className="text-[11px] font-bold text-surface-muted uppercase tracking-wider">
-                Live Matching Pipeline
-              </span>
-              <span className="px-2 py-0.5 rounded-md bg-sage-100 dark:bg-sage-950/60 text-sage-800 dark:text-sage-300 text-[10px] font-bold border border-sage-200 dark:border-sage-800">
-                AI Active
-              </span>
+          <h1 className="text-fluid-hero font-black text-surface-text tracking-tight font-display">
+            Build a Resume That <br className="hidden sm:inline" />
+            <span className="text-plum-900 dark:text-plum-300 underline decoration-terracotta-400 underline-offset-4 sm:underline-offset-8">
+              Gets Matched.
+            </span>
+          </h1>
+
+          <p className="text-surface-muted text-xs sm:text-sm md:text-base leading-relaxed max-w-xl">
+            Create ATS-tailored resumes, analyze real job descriptions with Google Gemini AI, identify missing skill gaps, and optimize your qualifications to win interviews.
+          </p>
+
+          {/* Main Action CTAs (Stack on small mobile, row on tablet/desktop) */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+            <button
+              onClick={() => onSelectTab('builder')}
+              className="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-plum-900 hover:bg-plum-800 text-white font-bold text-xs sm:text-sm shadow-card active:scale-[0.98] transition-all min-h-[46px]"
+            >
+              <FileText className="w-4 h-4 text-terracotta-300 shrink-0" />
+              <span>Build My Resume</span>
+              <ArrowRight className="w-4 h-4 shrink-0" />
+            </button>
+
+            <button
+              onClick={() => onSelectTab('matcher')}
+              className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-surface-card hover:bg-surface-elevated text-surface-text border border-surface-border font-bold text-xs sm:text-sm shadow-subtle transition-all min-h-[46px]"
+            >
+              <Target className="w-4 h-4 text-terracotta-500 shrink-0" />
+              <span>Match a Job</span>
+            </button>
+          </div>
+
+          {/* Highlights pill tags */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-xs text-surface-muted font-medium">
+            <div className="flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0" />
+              <span>ATS Scoring</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0" />
+              <span>1-Click Skill Gap Fix</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5 text-sage-600 dark:text-sage-400 shrink-0" />
+              <span>PDF Export</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Independent Solid Live Matching Pipeline Card */}
+        <div className="lg:col-span-5 bg-surface-card border border-surface-border rounded-3xl p-5 sm:p-6 space-y-3.5 shadow-card">
+          <div className="flex items-center justify-between pb-3 border-b border-surface-border">
+            <span className="text-[11px] font-bold text-surface-muted uppercase tracking-wider">
+              Live Matching Pipeline
+            </span>
+            <span className="px-2 py-0.5 rounded-md bg-sage-100 dark:bg-sage-950/60 text-sage-800 dark:text-sage-300 text-[10px] font-bold border border-sage-200 dark:border-sage-800">
+              AI Active
+            </span>
+          </div>
+
+          {/* Stepped Visual Workflow */}
+          <div className="space-y-2.5">
+            {/* Step 1: Resume */}
+            <div
+              onClick={() => setActiveDemoStage(1)}
+              className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                activeDemoStage >= 1
+                  ? 'bg-surface-elevated border-plum-300 dark:border-plum-800 shadow-subtle'
+                  : 'bg-surface-elevated/60 border-surface-border opacity-60'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-lg bg-plum-100 dark:bg-plum-950 text-plum-900 dark:text-plum-200 flex items-center justify-center text-xs font-bold shrink-0">
+                    1
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-bold text-xs text-surface-text truncate">Resume Profile</div>
+                    <div className="text-[10px] text-surface-muted truncate">Alex Rivera • {experienceCount} Positions • {skillCount} Skills</div>
+                  </div>
+                </div>
+                <CheckCircle2 className="w-4 h-4 text-sage-600 dark:text-sage-400 shrink-0" />
+              </div>
             </div>
 
-            {/* Stepped Visual Workflow */}
-            <div className="space-y-2.5">
-              {/* Step 1: Resume */}
-              <div
-                onClick={() => setActiveDemoStage(1)}
-                className={`p-3 rounded-xl border transition-all cursor-pointer ${
-                  activeDemoStage >= 1
-                    ? 'bg-surface-card border-plum-300 dark:border-plum-800 shadow-subtle'
-                    : 'bg-surface-card/60 border-surface-border opacity-60'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-7 h-7 rounded-lg bg-plum-100 dark:bg-plum-950 text-plum-900 dark:text-plum-200 flex items-center justify-center text-xs font-bold shrink-0">
-                      1
-                    </div>
-                    <div className="min-w-0">
-                      <div className="font-bold text-xs text-surface-text truncate">Resume Profile</div>
-                      <div className="text-[10px] text-surface-muted truncate">Alex Rivera • {experienceCount} Positions • {skillCount} Skills</div>
-                    </div>
+            {/* Connecting Step Arrow */}
+            <div className="text-center text-terracotta-500 font-bold text-xs leading-none">↓</div>
+
+            {/* Step 2: Job Requirements */}
+            <div
+              onClick={() => setActiveDemoStage(2)}
+              className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                activeDemoStage >= 2
+                  ? 'bg-surface-elevated border-terracotta-300 dark:border-terracotta-800 shadow-subtle'
+                  : 'bg-surface-elevated/60 border-surface-border opacity-60'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-7 h-7 rounded-lg bg-terracotta-100 dark:bg-terracotta-950 text-terracotta-700 dark:text-terracotta-300 flex items-center justify-center text-xs font-bold shrink-0">
+                    2
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-sage-600 dark:text-sage-400 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="font-bold text-xs text-surface-text truncate">Job Requirements</div>
+                    <div className="text-[10px] text-surface-muted truncate">Lead Full Stack Engineer • Apex Cloud</div>
+                  </div>
+                </div>
+                <CheckCircle2 className="w-4 h-4 text-sage-600 dark:text-sage-400 shrink-0" />
+              </div>
+            </div>
+
+            {/* Connecting Step Arrow */}
+            <div className="text-center text-terracotta-500 font-bold text-xs leading-none">↓</div>
+
+            {/* Step 3: AI Analysis & 92% Match Gauge */}
+            <div
+              onClick={() => setActiveDemoStage(3)}
+              className="p-4 rounded-xl bg-surface-elevated border-2 border-plum-900 dark:border-terracotta-500 shadow-card space-y-3"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-surface-muted tracking-wider">
+                    Overall Compatibility
+                  </span>
+                  <div className="font-display font-black text-xl sm:text-2xl text-plum-900 dark:text-plum-200">
+                    92% Match
+                  </div>
+                </div>
+
+                {/* Circular Radial Gauge */}
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-surface-card border-4 border-terracotta-500 flex items-center justify-center font-bold text-xs text-plum-900 dark:text-plum-200 shrink-0 shadow-subtle">
+                  92%
                 </div>
               </div>
 
-              {/* Connecting Step Arrow */}
-              <div className="text-center text-terracotta-500 font-bold text-xs leading-none">↓</div>
-
-              {/* Step 2: Job Requirements */}
-              <div
-                onClick={() => setActiveDemoStage(2)}
-                className={`p-3 rounded-xl border transition-all cursor-pointer ${
-                  activeDemoStage >= 2
-                    ? 'bg-surface-card border-terracotta-300 dark:border-terracotta-800 shadow-subtle'
-                    : 'bg-surface-card/60 border-surface-border opacity-60'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-7 h-7 rounded-lg bg-terracotta-100 dark:bg-terracotta-950 text-terracotta-700 dark:text-terracotta-300 flex items-center justify-center text-xs font-bold shrink-0">
-                      2
-                    </div>
-                    <div className="min-w-0">
-                      <div className="font-bold text-xs text-surface-text truncate">Job Requirements</div>
-                      <div className="text-[10px] text-surface-muted truncate">Lead Full Stack Engineer • Apex Cloud</div>
-                    </div>
-                  </div>
-                  <CheckCircle2 className="w-4 h-4 text-sage-600 dark:text-sage-400 shrink-0" />
+              {/* Sub-breakdown bars */}
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-surface-border text-[11px]">
+                <div>
+                  <span className="text-surface-muted">Skills Match</span>
+                  <div className="font-bold text-surface-text">94% (12/13)</div>
                 </div>
-              </div>
-
-              {/* Connecting Step Arrow */}
-              <div className="text-center text-terracotta-500 font-bold text-xs leading-none">↓</div>
-
-              {/* Step 3: AI Analysis & 92% Match Gauge */}
-              <div
-                onClick={() => setActiveDemoStage(3)}
-                className="p-4 rounded-xl bg-surface-card border-2 border-plum-900 dark:border-terracotta-500 shadow-card space-y-3"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-surface-muted tracking-wider">
-                      Overall Compatibility
-                    </span>
-                    <div className="font-display font-black text-xl sm:text-2xl text-plum-900 dark:text-plum-200">
-                      92% Match
-                    </div>
-                  </div>
-
-                  {/* Circular Radial Gauge */}
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-plum-50 dark:bg-plum-950/80 border-4 border-terracotta-500 flex items-center justify-center font-bold text-xs text-plum-900 dark:text-plum-200 shrink-0">
-                    92%
-                  </div>
-                </div>
-
-                {/* Sub-breakdown bars */}
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-surface-border text-[11px]">
-                  <div>
-                    <span className="text-surface-muted">Skills Match</span>
-                    <div className="font-bold text-surface-text">94% (12/13)</div>
-                  </div>
-                  <div>
-                    <span className="text-surface-muted">Experience Fit</span>
-                    <div className="font-bold text-surface-text">90% (Senior)</div>
-                  </div>
+                <div>
+                  <span className="text-surface-muted">Experience Fit</span>
+                  <div className="font-bold text-surface-text">90% (Senior)</div>
                 </div>
               </div>
             </div>
